@@ -2,4 +2,11 @@ This folder contains the Arduino code which interfaces with hardware.
 Arduino listens for incoming traffic from the Python server and then
 performs routines according to the message protocol.
 
-This work is at pre-alpha stage. It's not safe to use yet.
+This work is at pre-alpha stage. It's not really safe to use yet.
+
+Note that in order to use this library, certain third party libraries are needed because
+of the sensors: OneWire and DallasTemperature for DS18B20 and DHT11 for the DHT11 humidity/temperature
+sensor. These libraries need to be in their own folders in the Arduino /../sketchbook/library/
+
+Also this pre-alpha stage is using MemoryFree for debugging. MemoryFree (found in the Arduino reference)
+needs to be saved in the same folder with all the files included in this library.
