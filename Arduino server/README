@@ -1,0 +1,5 @@
+This folder contains the Arduino code which interfaces with hardware.
+Arduino listens for incoming traffic from the Python server and then
+performs routines according to the message protocol.
+
+This work is at pre-alpha stage. It's not safe to use yet.
