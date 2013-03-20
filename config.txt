@@ -1,0 +1,52 @@
+[header]
+upload config = false
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # 
+# Add sensor devices in this area. Use syntax:
+# name index type high_treshold low_treshold
+#
+# Separate values with spaces. Only name and index
+# are required, rest have default values.
+# # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+[sensor]
+temperature_room 54 2
+hygrometer_ebb 55 0 400
+hygrometer_soil 56 0
+humidity_room 57 1
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # 
+# Add pump devices in this area. Use syntax:
+# name index max_on_time uses_hygrometer hygrometer_index
+#
+# Max_on_time is a safeguard, defining how many seconds the
+# pump is allowed to run.
+# Uses_hygrometer can have values either 1 or 0, true or false.
+# Tells the Arduino logic that while it's driving pump it should
+# read pump's hygrometer to see if the high_treshold value has been
+# exceeded.
+# Hygrometer_index tells the actual index of the sensor devices.
+# NOTICE: user MUST define this sensor in order for the pump to
+# work properly.
+# Only name and index are required, rest have default values.
+# # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+[pump]
+pump1 40 140 1 55
+
+[lamp]
+lamp1 41
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # 
+# Add tasks in this area. Use syntax:
+# name action device_name (time1, time2, time3, ...)
+# or:
+# name action device_name (time_in_minutes min)
+# # # # # # # # # # # # # # # # # # # # # # # # # # 
+[task]
+#pumps write pump1 (10:00:00, 15:00:00, 20:00:00)
+readtemp_room read temperature_room (5 min)
+readlevel_ebb read hygrometer_ebb (5 min)
+readlevel_soil read hygrometer_soil (5 min)
+readhumidity_room read humidity_room (5 min)
