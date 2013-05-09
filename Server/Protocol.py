@@ -1,3 +1,23 @@
+"""
+    Naga Automation Suite - an automation system for home gardens
+    Copyright (C) 2013  Jere Teittinen
+    
+    Author: Jere Teittinen <j.teittinen@luukku.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
 class Protocol:
     """
         This class composes messages that are compliant to the communication protocol that
@@ -27,16 +47,17 @@ class Protocol:
         
         # Fourth byte, additional parameters
         self.remove = "r"
-        self.highTreshold = "h"
-        self.lowTreshold = "l"
+        self.highThreshold = "h"
+        self.lowThreshold = "l"
         self.type = "t"
         self.index = "i"
         self.failed = "f"
         
         # Sensor types
-        self.default = 0
-        self.temperature = 1
-        self.DHT11 = 2
+        self.default = 48
+        self.temperature = 49
+        self.DHT11 = 50
+        self.SR04 = 51
         
     def readSensor(self, index):
         """
@@ -70,7 +91,12 @@ class Protocol:
             Tells Arduino to insert a sensor device.
         """
         
-        if highTreshold == -1024:
+        if type == "hygrometer": type = self.default
+        elif type == "temp": type = self.temperature
+        elif type == "humidity": type = self.DHT11
+        elif type == "ultrasound": type = self.SR04
+        
+        if highThreshold == -1024:
             return self.insert + chr(index) + self.sensor + chr(type)
         
         elif lowThreshold != -1024 and highThreshold == -1024:

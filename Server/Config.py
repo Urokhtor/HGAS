@@ -1,198 +1,86 @@
-﻿from Protocol import Protocol
-import Devices
-from Scheduler import Task
+﻿"""
+    Naga Automation Suite - an automation system for home gardens
+    Copyright (C) 2013  Jere Teittinen
+    
+    Author: Jere Teittinen <j.teittinen@luukku.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+import json
+from threading import RLock
 
 class Config:
-
-    def __init__(self, parent):
-        self.parent = parent
-        self.fileName = "config.txt"
-        self.errlogFileName = "errlog.txt"
-        self.header = "[header]"
-        self.sensor = "[sensor]"
-        self.pump = "[pump]"
-        self.lamp = "[lamp]"
-        self.task = "[task]"
-        self.uploadConf = True
+    """
+        A simple class which supports making configurations using JSON objects. Used to store pretty much
+        all the data in this project.
+    """
     
-    def loadConf(self):
-        seeking = 0
-        foundHeader = False
-        f = open(self.fileName, "r")
-        err = open(self.errlogFileName, "w")
-        line = f.readline()
+    def __init__(self, confFile):
+        self.confFile = confFile
+        self.mutex = RLock() # For thread safe file operations.
+        f = open(self.confFile, "r")
+        self.data = json.load(f)
         
-        #self.parent.connection.send(self.parent.protocol.setupStart())
+        # Generate a default conf if one doesn't exist so there won't be any errors.
+        if not "devices" in self.data: self.data["devices"] = []
+        if not "sensors" in self.data: self.data["sensors"] = []
+        if not "tasks" in self.data: self.data["tasks"] = []
+        if not "sensorcontrol" in self.data: self.data["sensorcontrol"] = []
+        if not "clients" in self.data: self.data["clients"] = []
+        if not "localip" in self.data: self.data["localip"] = ""
+        if not "listenport" in self.data: self.data["listenport"] = 8080
+        if not "arduinoport" in self.data: self.data["arduinoport"] = 48371
+        if not "verbose" in self.data: self.data["verbose"] = True
+        if not "logginginterval" in self.data: self.data["logginginterval"] = 10
+        if not "dailyplotinterval" in self.data: self.data["dailyplotinterval"] = 30
+        if not "weeklyplotinterval" in self.data: self.data["weeklyplotinterval"] = 60
+        if not "sensorcontrolinterval" in self.data: self.data["sensorcontrolinterval"] = 10
+        if not "eventloglength" in self.data: self.data["eventloglength"] = 40
         
-        while line != "":
-            if len(line) == 1:
-                pass
-                
-            elif line.startswith("#"):
-                pass
-            
-            elif line.find(self.header) != -1:
-                seeking = 1
-                foundHeader = True
-                
-            elif line.find(self.sensor) != -1:
-                if not foundHeader:
-                    err.write("Sensor definitions before header!")
-                    break
-                    
-                seeking = 2
-                
-            elif line.find(self.pump) != -1:
-                if not foundHeader:
-                    err.write("Pump definitions before header!")
-                    break
-                    
-                seeking = 3
-            
-            elif line.find(self.lamp) != -1:
-                if not foundHeader:
-                    err.write("Lamp definitions before header!")
-                    break
-                
-                seeking = 4
-            
-            elif line.find(self.task) != -1:
-                if not foundHeader:
-                    err.write("Task definitions before header!")
-                    break
-                
-                seeking = 5
-            
-            # Read header data into memory
-            elif seeking == 1:
-                if line.find("upload config = false") != -1:
-                    self.uploadConf = False
-                    
-            # Read sensors into memory
-            elif seeking == 2:
-                name = ""
-                index = 0
-                type = 0
-                highThreshold = -1024
-                lowThreshold = -1024
-                
-                if len(line.split(" ")) == 2:
-                    name, index = line.split(" ")
-                elif len(line.split(" ")) == 3:
-                    name, index, type = line.split(" ")
-                elif len(line.split(" ")) == 4:
-                    name, index, type, highThreshold = line.split(" ")
-                elif len(line.split(" ")) == 5:
-                    name, index, type, highThreshold, lowThreshold = line.split(" ")
-                
-                device = Devices.SensorDevice(int(index), int(type), int(highThreshold), int(lowThreshold))
-                self.parent.deviceManager.addSensorDevice(name, device)
-                
-                
-                if self.uploadConf:
-                    self.parent.connection.send(self.parent.protocol.insertSensor(device.getIndex(), device.getType(), device.getLowThreshold(), device.getHighThreshold()))
-    
-            # Read pumps into memory
-            elif seeking == 3:
-                name = ""
-                index = 0
-                maxOnTime = 0
-                usesHygrometer = False
-                hygrometerIndex = -1
-                
-                if len(line.split(" ")) == 2:
-                    name, index = line.split(" ")
-                elif len(line.split(" ")) == 3:
-                    name, index, maxOnTime = line.split(" ")
-                elif len(line.split(" ")) == 4:
-                    name, index, maxOnTime, usesHygrometer = line.split(" ")
-                elif len(line.split(" ")) == 5:
-                    name, index, maxOnTime, usesHygrometer, hygrometerIndex = line.split(" ")
-                
-                # If usesHygrometer can't have a boolean value (i.e. 0 or 1), force it to false.
-                if int(usesHygrometer) > 1 or int(usesHygrometer) < 0:
-                    usesHygrometer = "0"
-                
-                device = Devices.PumpDevice(int(index), int(maxOnTime), bool(usesHygrometer), int(hygrometerIndex))
-                self.parent.deviceManager.addPumpDevice(name, device)
-
-                if self.uploadConf:
-                    self.parent.connection.send(self.parent.protocol.insertPump(device.getIndex(), device.getMaxOnTime(), device.getUsesHumiditySensor(), device.getHumiditySensorIndex()))
-            
-            elif seeking == 4:
-                name = ""
-                index = 0
-                type = 0
-                
-                if len(line.split(" ")) == 2:
-                    name, index = line.split(" ")
-                
-                device = Devices.Device(int(index), int(type))
-                self.parent.deviceManager.addDevice(name, device)
-            
-            elif seeking == 5:
-                name = ""
-                action = ""
-                device = ""
-                schedules = []
-                isInterval = False
-                
-                parameters = line.split("(")[0].strip().split(" ")
-                
-                if line.find("(") != -1:
-                    if line.split("(")[1].find("min") != -1:
-                        schedules = line.split("(")[1].split("min")[0].strip()
-                        isInterval = True
-                        
-                    else:
-                        schedules = line.split("(")[1].strip().split(")")[0].replace(" ", "").replace(":", " ").split(",")
-                
-                
-                if len(parameters) < 3 or len(parameters) > 3:
-                    err.write("Erroneous task: wront number of arguments.")
-                    break
-                
-                name, action, device = parameters
-                _device = {}
-                task = {}
-                
-                if self.parent.deviceManager.hasDevice(device):
-                    _device = self.parent.deviceManager.getDevice(device)
-                elif self.parent.deviceManager.hasSensorDevice(device):
-                    _device = self.parent.deviceManager.getSensorDevice(device)
-                elif self.parent.deviceManager.hasPumpDevice(device):
-                    _device = self.parent.deviceManager.getPumpDevice(device)
-                
-                if action.find("write") != -1:
-                    task = Task(name, self.parent.protocol.write(_device.getIndex()), _device.getIndex(), self.parent.connection.send)
-                elif action.find("read") != -1:
-                    task = Task(name, self.parent.protocol.readSensor(_device.getIndex()), _device.getIndex(), self.parent.connection.send)
-                
-                # If we want to add time by interval, do so. I.e. execute every 10 minutes and so on.
-                # Otherwise read the specified schedules, i.e. execute at clock 15:00:00.
-                if isInterval:
-                    _time = 0
-                    timeInterval = int(schedules)*60
-                    
-                    while _time < 86400:
-                        task.addScheduledEvent(_time)
-                        _time += timeInterval
-                
-                else:
-                    for schedule in schedules:
-                        taskTime = schedule.split(" ")
-                        taskTimeInt = int(taskTime[0])*60*60 + int(taskTime[1])*60 + int(taskTime[2])
-                            
-                        if taskTimeInt > 86400:
-                            err.write("Couldn't add scheduled event: time doesn't exist.")
-                            continue
-                            
-                        task.addScheduledEvent(taskTimeInt)
-                
-                self.parent.scheduler.taskManager.addTask(task)
-            
-            line = f.readline()
-        
-        #self.parent.connection.send(self.parent.protocol.setupEnd())
+        self._write()
         f.close()
-        err.close()
+
+    def _write(self):
+        """
+            Backend which writes the data down to the configuration file.
+        """
+        
+        self.mutex.acquire()
+        f = open(self.confFile, "w")
+        json.dump(self.data, f, indent = 4)
+        f.close()
+        self.mutex.release()
+    
+    def setItem(self, key, value):
+        """
+            Updates an object and writes it down to the configuration file.
+        """
+        
+        self.data[key] = value
+        self._write()
+    
+    def getItem(self, key, default):
+        """
+            Returns a JSON object with given name - or the given default parameter if the object wasn't found.
+        """
+        
+        return self.data.get(key, default)
+        
+    def items(self):
+        """
+            Returns all the data in the configuration file.
+        """
+        
+        return self.data.items()

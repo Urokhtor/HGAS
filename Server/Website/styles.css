@@ -1,0 +1,158 @@
+h3 {
+    background: -webkit-linear-gradient(left, #D8D8D8, #ffffff);
+}
+
+body {
+    margin: 10px 0px;
+    padding: 0px;
+}
+
+div {
+    overflow: auto;
+    background-color: white;
+}
+
+div.header {
+    margin: 0px auto;
+    width: 768px;
+    border-top-left-radius:10px 10px;
+    border-top-right-radius: 10px 10px;
+    box-shadow: 0px 0px 7px 0px;
+}
+
+td {
+    vertical-align: top;
+}
+
+div.body {
+    margin: 0px auto;
+    width: 768px;
+    box-shadow: 0px 0px 7px 0px;
+}
+
+div.menu {
+    background-color: #D8D8D8;
+    margin: 0px auto;
+    width: 768px;
+    height: 35px;
+    box-shadow: 0px 0px 7px 0px;
+}
+
+div.leftcolumn {
+    width: 30%;
+    height: 100%;
+    background: -webkit-linear-gradient(top, #D8D8D8, #ffffff);
+    float: left;
+    margin-bottom: 20px;
+}
+
+div.leftcolumnitem {
+    background-color: #D8D8D8;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+div.devicecontainerdiv {
+    background-color: #C7C7C7;
+    margin-top:4px;
+    width: 700px;
+}
+
+div.devicecontainerdiv:hover {
+    background-color: #E8E6E6;
+}
+
+div.devicestatediv {
+    background-color: transparent;
+    float: left;
+    width: 40px;
+    padding-top:4px;
+    padding-left: 2px;
+}
+
+div.devicenamediv {
+    background-color: transparent;
+    float:left;
+    width:200px;
+    padding-top:4px;
+    padding-left: 2px;
+    text-align: left;
+}
+
+div.deviceactioncontaineriv {
+    background-color: transparent;
+    float: right;
+}
+
+div.devicebutton {
+    width: 100px;
+}
+
+div.rightcolumn {
+    width: 68%;
+    float: right;
+    margin-bottom: 20px;
+}
+
+div.rightcolumnitem {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+div.eventlog {
+    width: 100%;
+    padding-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    background: -webkit-linear-gradient(top, #D8D8D8, #ffffff);
+}
+
+div.responselabel {
+    font-weight: bold;
+}
+
+input.menubutton {
+    background-color: #D8D8D8;
+    border-style: none;
+    height: 85%;
+    margin: 0px auto;
+}
+
+input.menubutton:hover {
+    background-color: #848484;
+}
+
+ul.leftcolumnul {
+    background-color: transparent;
+    margin-left: 10px;
+    padding: 0px;
+}
+
+div.leftcolumndiv {
+    background-color: transparent;
+    margin: 0px;
+    padding: 0px;
+}
+
+ul.deviceul {
+    float: left;
+    list-style-type: none;
+}
+
+input.leftcolumnbutton {
+    background-color: #C7C7C7;
+    text-align: left;
+    border-style: none;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+input.leftcolumnbutton:hover {
+    background-color: #E8E6E6;
+}
+
+img.sensorimage {
+    width: 100%;
+}
