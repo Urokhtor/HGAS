@@ -4,6 +4,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <dht11.h>
+#include <Ultrasonic.h>
 
 void Sensor::setIndex(int newIndex)
 {
@@ -31,6 +32,9 @@ double Sensor::getReading()
             break;
         case DHT11:
             lastReading = getDHT11Reading();
+            break;
+        case SR04:
+            lastReading = getSR04Reading();
             break;
         default:
             lastReading = analogRead(index);
@@ -82,6 +86,12 @@ double Sensor::getDHT11Reading()
   return (double)DHT11.humidity;
 }
 
+double Sensor::getSR04Reading()
+{
+	Ultrasonic ultrasonic(index, index+1);
+    double reading = (double)ultrasonic.convert(ultrasonic.timing(), Ultrasonic::CM);
+    return reading;
+}
 /*
 * In case the last made reading is needed, return it.
 */

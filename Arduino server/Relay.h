@@ -32,7 +32,7 @@ public:
     void Initialize(int relayStartIndex);
     int controlRelays(int command);
     int switchOneRelay(int index);
-    boolean getState(int index);
+    int getState(int index);
     boolean hasIndex(int _index);
 };
 

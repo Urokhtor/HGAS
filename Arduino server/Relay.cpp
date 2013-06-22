@@ -36,10 +36,19 @@ int RelayManager::controlRelays(int command)
     return 0;
 }
 
-boolean RelayManager::getState(int index)
+int RelayManager::getState(int index)
 {
     for (int i = 0; i < MAX_RELAY_SIZE; i++)
-        if (relays.relayPins[i] == index) return relays.relayStates[i];
+    {
+        if (relays.relayPins[i] == index)
+        {
+            return (int)digitalRead(index);
+            //if (relays.relayStates[i] == HIGH) return 1;
+            //else return 0;
+        }
+    }
+    
+    return -1;
 }
 
 boolean RelayManager::hasIndex(int _index)
@@ -86,23 +95,41 @@ int RelayManager::switchOneRelay(int index)
     for (int i = 0; i < MAX_RELAY_SIZE; i++)
     {
         if (relays.relayPins[i] == index)
-        {
-            if (relays.relayStates[i] == LOW)
+        {            
+            if (digitalRead(index) == LOW)
             {
+                Serial.println("Toggled on");
                 digitalWrite(relays.relayPins[i], LOW);
-                relays.relayStates[i] = HIGH;
-                return 1;
+                //relays.relayStates[i] = HIGH;
+                return 601;
             }
             
             else
             {
+                Serial.println("Toggled off");
+                digitalWrite(relays.relayPins[i], HIGH);
+                //relays.relayStates[i] = LOW;
+                return 600;
+            }
+            /*if (relays.relayStates[i] == LOW)
+            {
+                Serial.println("Toggled on");
+                digitalWrite(relays.relayPins[i], LOW);
+                relays.relayStates[i] = HIGH;
+                return 601;
+            }
+            
+            else
+            {
+                Serial.println("Toggled off");
                 digitalWrite(relays.relayPins[i], HIGH);
                 relays.relayStates[i] = LOW;
-                return 0;
-            }
+                return 600;
+            }*/
         }
     }
     
+    Serial.println("Error");
     return -1;
 }
 

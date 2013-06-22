@@ -6,6 +6,9 @@
 const int _DEFAULT = 0;
 const int TEMPERATURE = 1;
 const int DHT11 = 2;
+const int SR04 = 3;
+
+const int MAX_DISTANCE = 200;
 
 // This is currently tailored for Arduino Mega to use all the analog ports.
 // However some sensors use digital input so this should be changed in future.
@@ -24,6 +27,7 @@ protected:
     // Sensor type specific functions for taking readings.
     double getDS18B20Reading();
     double getDHT11Reading();
+    double getSR04Reading();
     
 public:
     void setIndex(int newIndex);

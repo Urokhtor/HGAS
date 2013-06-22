@@ -4,6 +4,7 @@ Manager::Manager(EthernetServer *_server, IPAddress _IP)
 {
     server = _server;
     IP = _IP;
+    parser = MessageParser::MessageParser();
 }
 
 void Manager::Initialize()
@@ -14,13 +15,15 @@ void Manager::Initialize()
     relay.Initialize(RELAY_START_INDEX);
 
     sensorManager.setSize(0);
-    sensorManager.AddSensor(A0, TEMPERATURE);
+    /*sensorManager.AddSensor(A0, TEMPERATURE);
     sensorManager.AddSensor(A1, _DEFAULT, HUMIDITY_TRESHOLD);
     sensorManager.AddSensor(A2, _DEFAULT);
-    sensorManager.AddSensor(A3, DHT11);
+    sensorManager.AddSensor(A3, DHT11);*/
     
     pumpManager.setSize(0);
-    pumpManager.AddPump(40, _PUMP_MAX_ON_TIME, true, A1);
+    /*pumpManager.AddPump(40, _PUMP_MAX_ON_TIME, true, A1);*/
+    
+    parser.SetManager(this);
 }
 
 EthernetServer *Manager::getServer()
@@ -36,59 +39,47 @@ IPAddress Manager::getLocalIP()
 void Manager::Update()
 {
     timer.Update();
-    HandleInterfaces(timer.getCurrentTime());
-}
-
-// This is useless, really. Move this function to Update(). We don't need this abstraction.
-void Manager::HandleInterfaces(unsigned long currentTime)
-{
-    buffer c;
-    c = ReadCommand();
-    
-    if (c.c[0] != *"")
-    {
-        // Parse command.
-        ExecuteCommand(currentTime, c);
-        
-        // if not success, report about error.
-    }
-    
-    HandlePumps(currentTime);
+    ReadCommand();
+    HandlePumps(timer.getCurrentTime());
 }
 
 /*
 * Check if there are any pending connections and read them.
 */
 
-buffer Manager::ReadCommand()
+void Manager::ReadCommand()
 {
     EthernetClient _client = server->available();
     buffer c;
-    
+    char *response;
+    //String c = "";    
+    //String response = "";
+
     if (_client)
     {
         while (_client.connected())
         {
             int i = 0;
 
-            while (_client.available())
+            while (_client.available() && i <= LIMIT)
             {
                 // Fill the buffer or read all the data client has received.
-                if (i != LIMIT) c.c[i++] = _client.read();
-                else break;
+                c.c[i++] = _client.read();
+            }
+            
+            // If we received a message, try to execute it.
+            if (i > 0) response = parser.Execute(parser.toJson(c.c));
+            
+            if (response != "")
+            {Serial.println(response);
+                _client.println(response);
+                _client.flush();
             }
             
             _client.stop();
             break;
         }
     }
-    
-    // Otherwise fill array with nothing so our HandleInterface loop doesn't get confused.
-    else
-        for (int i = 0; i < LIMIT; i++)
-            c.c[i] = *"";
-
-    return c;
 }
 
 /*
@@ -96,7 +87,7 @@ buffer Manager::ReadCommand()
 * Basically it evaluates the incoming message so it's protocol compliant and finally at the
 * end of each message performs the corresponding routine that is defined by the protocol.
 */
-
+/*
 void Manager::ExecuteCommand(unsigned long currentTime, buffer c)
 {
     if (c.c[0] == READ)
@@ -697,7 +688,7 @@ void Manager::ExecuteCommand(unsigned long currentTime, buffer c)
         SendMessage(msg);
     }
 }
-
+*/
 /*
 * Loop through pumps in the pump manager and update the ones that are currently running,
 * stop them if needed and inform the server about it.
