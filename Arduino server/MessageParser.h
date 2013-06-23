@@ -41,17 +41,17 @@ class MessageParser
 private:
     Manager *manager;
     
-    char *Read(aJsonObject *object);
-    char *Run(aJsonObject *object, int commandType = SEND_WRITE);
-    char *Insert(aJsonObject *object);
-    char *Modify(aJsonObject *object);
-    char *Remove(aJsonObject *object);
+    void Read(aJsonObject *object, aJsonObject *returnObject);
+    void Run(aJsonObject *object, aJsonObject *returnObject, int commandType = SEND_WRITE);
+    void Insert(aJsonObject *object, aJsonObject *returnObject);
+    void Modify(aJsonObject *object, aJsonObject *returnObject);
+    void Remove(aJsonObject *object, aJsonObject *returnObject);
     
 public:
     //MessageParser(Manager *_manager) {manager = _manager;};
     //~MessageParser() {delete[] manager;};
     
-    char *Execute(aJsonObject *root);
+    void Execute(aJsonObject *root, char *response);
     aJsonObject *toJson(char message[]);
     void SetManager(Manager *_manager);
 };

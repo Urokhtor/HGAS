@@ -93,10 +93,10 @@ public:
     
     EthernetServer *getServer();
     IPAddress getLocalIP();
-	SensorManager getSensorManager() {return sensorManager;}
-    PumpManager getPumpManager() {return pumpManager;}
-    RelayManager getRelayManager() {return relay;}
-    Timer getTimer() {return timer;}
+	SensorManager *getSensorManager() {return &sensorManager;}
+    PumpManager *getPumpManager() {return &pumpManager;}
+    RelayManager *getRelayManager() {return &relay;}
+    Timer *getTimer() {return &timer;}
 };
 
 #endif

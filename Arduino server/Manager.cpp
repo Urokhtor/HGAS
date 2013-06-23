@@ -50,13 +50,13 @@ void Manager::Update()
 void Manager::ReadCommand()
 {
     EthernetClient _client = server->available();
-    buffer c;
+    //buffer c;
+    char c[512];
     char *response;
-    //String c = "";    
-    //String response = "";
 
     if (_client)
     {
+        Serial.print("Free memory before: ");Serial.println(freeMemory());
         while (_client.connected())
         {
             int i = 0;
@@ -64,19 +64,21 @@ void Manager::ReadCommand()
             while (_client.available() && i <= LIMIT)
             {
                 // Fill the buffer or read all the data client has received.
-                c.c[i++] = _client.read();
+                c[i++] = _client.read();
             }
             
             // If we received a message, try to execute it.
-            if (i > 0) response = parser.Execute(parser.toJson(c.c));
+            if (i > 0) parser.Execute(parser.toJson(c), response);
+
+            _client.println(response);
+            _client.flush();
             
-            if (response != "")
-            {Serial.println(response);
-                _client.println(response);
-                _client.flush();
-            }
+            // Handle memory management.
+            delete response;
+            memset(&c, 0, sizeof c);
             
             _client.stop();
+            Serial.print("Free memory after: ");Serial.println(freeMemory());
             break;
         }
     }

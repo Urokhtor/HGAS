@@ -42,9 +42,8 @@ int RelayManager::getState(int index)
     {
         if (relays.relayPins[i] == index)
         {
-            return (int)digitalRead(index);
-            //if (relays.relayStates[i] == HIGH) return 1;
-            //else return 0;
+            if (relays.relayStates[i] == HIGH) return 1;
+            else return 0;
         }
     }
     
@@ -96,24 +95,8 @@ int RelayManager::switchOneRelay(int index)
     {
         if (relays.relayPins[i] == index)
         {            
-            if (digitalRead(index) == LOW)
+            if (relays.relayStates[i] == LOW)
             {
-                Serial.println("Toggled on");
-                digitalWrite(relays.relayPins[i], LOW);
-                //relays.relayStates[i] = HIGH;
-                return 601;
-            }
-            
-            else
-            {
-                Serial.println("Toggled off");
-                digitalWrite(relays.relayPins[i], HIGH);
-                //relays.relayStates[i] = LOW;
-                return 600;
-            }
-            /*if (relays.relayStates[i] == LOW)
-            {
-                Serial.println("Toggled on");
                 digitalWrite(relays.relayPins[i], LOW);
                 relays.relayStates[i] = HIGH;
                 return 601;
@@ -121,15 +104,14 @@ int RelayManager::switchOneRelay(int index)
             
             else
             {
-                Serial.println("Toggled off");
                 digitalWrite(relays.relayPins[i], HIGH);
                 relays.relayStates[i] = LOW;
                 return 600;
-            }*/
+            }
         }
     }
     
-    Serial.println("Error");
+    // Didn't find the relay.
     return -1;
 }
 
