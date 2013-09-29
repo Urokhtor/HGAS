@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>Documentation</title>
+</head>
+<body>
+Table of contents:
+<a href="#introduction">Introduction</a>
+<a href="#installation">Installation</a>
+<a href="#sensors">Sensors</a>
+<a href="#devices">Devices</a>
+<a href="#tasks">Tasks</a>
+<a href="#sensorcontrol">Sensorcontrol</a>
+<a href="#eventlog">Eventlog</a>
+<a href="#settings">Settings</a>
+
+<p><a id="introduction"><h3>Introduction:</h3></a></p>
+Naga Automation Suite is a home and garden automation system that interfaces with Telldus API. It uses Telldus' capabilities of controlling devices and reading sensor data to perform automation tasks.
+<br/>
+<br/>
+This documentation explains how to use the built in web interface for different tasks. Every tab the user sees on the web interface page has its own chapter so refer to the table of contents to find the appropriate part.
+
+<p><a id="installation"><h3>Installation:</h3></a></p>
+The installation guide is currently written specifically for Mac OS X 10.8. If the user has a question to ask or needs any help, please feel free to contact the author for advice.
+<br/>
+<br/>
+To start with, the software is designed so that it needs only the minimal number of additional libraries. Currently the only third party libraries the user needs to install are Matplotlib and Numpy. They are used to draw graphs about sensor data.
+
+<p>Installing Matplotlib:</p>
+You can either find the Matplotlib and Numpy source codes and compile them yourself, or use the .egg packages provided with this distribution.
+<br/>
+<br/>
+Install the .egg files with the command "sudo easy_install [file-name]". Do this first with Numpy and after it has finished installing, do the same with Matplotlib.
+<br/>
+<br/>
+Setting things up:
+Before you can actually start running the program you need to set up few things. Firstly, go to Telldus API page and create an account. After that go to "Your keys" and select "Generate a private token for my user only". After this step copy the generated keys in their corresponding places in the configuration.conf file.
+<br/>
+<br/>
+After that you need to generate a user and a password for the web interface. Do this with syntax "python Core.py user [username] [password]". The password is heavily encrypted and never stored in the program's memory.
+<br/>
+<br/>
+Then you must provide the program with an IP and a port that the program will listen to. Normally this means the home network IP of the computer you will run the program on. The port may be any of your choice, but keep in mind that commercial ports (range 0-1024) will probably require you to run the program with superuser privileges which is not wise. Add the IP with "python Core.py listento [IP] [port]"
+<br/>
+<br/>
+[Optional] You can also set up an email account which lets the program send emails to the user if for example a sensorcontrol task has executed and turned on/off a device. This step is performed with "python Core.py email [SMTP-server] [port] [senderemail] [receiveremail] [senderpassword]"
+<br/>
+<br/>
+Now you're ready to go. Start the program with "python Core.py" and if no errors are printed on your terminal, you may try connecting to the web interface with the IP and port you've provided.
+
+<p><a id="sensors"><h3>Sensors:</h3></a></p>
+In this section you will see information about your sensors. On the left there's an area which lists all the sensors in your Telldus system. They are automatically fetched when you connect the webUI and updated when you click a sensor. Click selects the chosen sensor and displays data about it on the middle of the page, such as the last reading and client the sensor belongs to.
+<br/>
+<br/>
+Under you can see the automatically generated plots for the sensor data which the system has logged. The webUI will automatically display plots for both temperature and humidity if the chosen sensor contains both sensors. Also, the system currently displays plots for the data for last 24 hours and for last 7 days.
+
+<p><a id="devices"><h3>Devices:</h3></a></p>
+The devices section is very similar to the one Telldus Live! has. Devices are fetched automatically and their state is displayed on the left of the row. Right next to the state is the device's name. On the right are buttons for operations supported by the device (on/off/dim/bell). When you click a button to perform an operation on the device, the state will be automatically updated.
+
+<p><a id="tasks"><h3>Tasks:</h3></a></p>
+Tasks can be set to run at predefined times. You can control one device with each task, or form device groups with Telldus Live! and through the group control many devices at once. The interface lets you pick one action (on/off/dim/...) for each task, so if you want to put on lights in some room and close them at a certain time, you will need two tasks - one for on action and one for off action. However you may also use the toggle action which just toggles the device's state, but make sure you don't manually override the task because then toggle won't function in the wanted manner.
+
+<p><a id="sensorcontrol"><h3>Sensorcontrol:</h3></a></p>
+Nothing here yet!
+
+<p><a id="eventlog"><h3>Eventlog:</h3></a></p>
+Eventlog displays colour coded data about events that take place in the system. Generally successfully carried out actions have the colour green, delete and shutting down action are orange and failed actions are red. This gives the user a fast insight to especially events that have failed.
+<br/>
+<br/>
+Furthermore the message starts with the name of the module that produced the message. For example "SensorControl: ..." would mean the message concerns the sensorcontrol module.
+
+<p><a id="settings"><h3>Settings:</h3></a></p>
+In this area the user is able to control various functions that the automation system handles. Most of the actions concern intervals for performing actions such as sensor logging interval and the interval that each plot type are generated. User can also define how many lines of eventlog shall be fetched (1-70 lines are permitted). At the bottom of the page user can shut down the system gracefully.
+<br/>
+<br/>
+All the settings are updated real time and work instantly.
+</body>

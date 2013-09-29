@@ -1,0 +1,24 @@
+{
+    "modules": [
+<<<<<<< HEAD
+        "Controllers.SensorFormController",
+=======
+        "Controllers.SensorFormController", 
+>>>>>>> cbd3bf5dabe3e29b4f5be216a7b15ab66f6732ef
+        "Controllers.TaskFormController", 
+        "Controllers.SensorcontrolFormController", 
+        "Controllers.NASMenuViewController", 
+        "Controllers.SensorViewController"
+<<<<<<< HEAD
+    ],
+    "lastmodify": {
+        "Controllers.SensorFormController": 0,
+        "Controllers.TaskFormController": 0,
+        "Controllers.SensorcontrolFormController": 0,
+        "Controllers.NASMenuViewController": 0,
+        "Controllers.SensorViewController": 0
+    }
+=======
+    ]
+>>>>>>> cbd3bf5dabe3e29b4f5be216a7b15ab66f6732ef
+}

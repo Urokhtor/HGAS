@@ -1,0 +1,8 @@
+Logs/
+Plots/
+__pycache__/
+nas.pem
+core.json
+.passwd.json
+*.xml
+.idea/

@@ -1,0 +1,8 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "element": "div", 
+        "id": "mainContainer", 
+        "childcount": 0
+    }
+}

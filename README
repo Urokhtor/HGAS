@@ -1,0 +1,20 @@
+Naga Automation Suite is a free and open source cross-platform project that aims to make home and garden automation
+cheap and easy to use. Currently it consists of a server written with Python that handles serving the web front end,
+managing the automation logic and controlling the microcontroller layer which interacts with hardware.
+
+I apologise that the documentation is badly inadequate. Improvements will follow once I feel that the codebase is in
+a releasable state.
+
+Installation (More detailed instructions to follow):
+1. You need to install Python 3 on your server.
+2. Install matplotlib (for plotting graphs).
+3. You need an Arduino Mega (or an equal) and the W5100 Ethernet shield.
+4. Download the project.
+    a) Move the files in Arduino directory in your Arduino sketchbook's libraries directory.
+    b) Move the Naga Automation Suite directory wherever you wish to run it from.
+5. Upload the Arduino skectch to your Arduino.
+    a) ... SOMETHING ABOUT THE SERVER IP
+6. Run Core.py from Naga Automation Suite to add an user and define the IP of your server.
+    a) ... WRITE MORE DETAILED INSTRUCTIONS
+7. Start NAS with python Core.py (or python3 Core.py depending on your system).
+8. Access the web front end from the IP you defined. NAS uses HTTPS and the default port is 8080.

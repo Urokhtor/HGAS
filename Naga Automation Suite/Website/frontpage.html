@@ -1,0 +1,537 @@
+<html>
+<head>
+<title>Naga Automation Suite control interface</title>
+<link href="styles.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../scripts/jquery-1.10.2.min.js"></script>
+</head>
+<body>
+<script type="text/javascript" charset="utf-8" language="JavaScript" src="../scripts/ControlInterface.js"></script>
+
+<div id="header" class="header">
+    <header>
+        <img src="../images/test.png" width="1000" height="144" alt="I accidentally in my interbutts!"/>
+    </header>
+</div>
+
+<div class="menubackground">
+<div id="menu" class="menu">
+    <ul class="menu">
+    <li class="menu"><input type=button id="sensorsButton" onClick="setMenu(submenu_sensor, sensorsButton)" value="Sensors" class="menubutton"></li>
+    <li class="menu"><input type=button id="devicesButton" onClick="setMenu(submenu_device, devicesButton)" value="Devices" class="menubutton"></li>
+    <li class="menu"><input type=button id="tasksButton" onClick="setMenu(submenu_task, tasksButton)" value="Tasks" class="menubutton"></li>
+    <li class="menu"><input type=button id="sensorcontrolButton" onClick="setMenu(submenu_sensorcontrol, sensorcontrolButton)" value="Sensorcontrol" class="menubutton"></li>
+    <li class="menu"><input type=button id="eventlogButton" onClick="setMenu(submenu_eventlog, eventlogButton)" value="Eventlog" class="menubutton"></li>
+    <li class="menu"><input type=button id="settingsButton" onClick="setMenu(submenu_settings, settingsButton)" value="Settings" class="menubutton"></li>
+    <li class="menu"><input type=button id="documentationButton" onClick="setMenu(submenu_documentation, documentationButton)" value="Docs" class="menubutton"></li>
+    </ul>
+</div>
+
+<div id="submenu" class="menubackground">
+    <div id="submenu_sensor" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+            <input type="button" id="sensorPage" onClick="setSubMenu(submenu_sensor, sensorPage, sensorContainer)" value="Info" class="submenubutton">
+        </li>
+        <li class="menu">
+            <input type="button" id="sensormanagementPage" onClick="setSubMenu(submenu_sensor, sensormanagementPage, sensormanagementContainer)" value="Management" class="submenubutton">
+    </li></ul>
+    </div>
+    <div id="submenu_device" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+            <input type="button" id="devicePage" onClick="setSubMenu(submenu_device, devicePage, deviceContainer)" value="Devices" class="submenubutton">
+    </li>
+    <li class="menu">
+            <input type="button" id="devicemanagementPage" onClick="setSubMenu(submenu_device, devicemanagementPage, devicemanagementContainer)" value="Management" class="submenubutton">
+    </li></ul>
+    </div>
+    <div id="submenu_task" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+        <input type="button" id="taskPage" onClick="setSubMenu(submenu_task, taskPage, taskContainer)" value="Tasks" class="submenubutton">
+        </li>
+        <li class="menu">
+            <input type="button" id="taskmanagementPage" onClick="setSubMenu(submenu_task, taskmanagementPage, taskmanagementContainer)" value="Management" class="submenubutton">
+    </li></ul>
+    </div>
+    <div id="submenu_sensorcontrol" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+        <input type="button" id="sensorcontrolPage" onClick="setSubMenu(submenu_sensorcontrol, sensorcontrolPage, sensorcontrolContainer)" value="Sensorcontrol" class="submenubutton">
+    </li>
+        <li class="menu">
+            <input type="button" id="sensorcontrolmanagementPage" onClick="setSubMenu(submenu_sensorcontrol, sensorcontrolmanagementPage, sensorcontrolmanagementContainer)" value="Management" class="submenubutton">
+    </li></ul>
+    </div>
+    <div id="submenu_eventlog" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+        <input type="button" id="eventlogPage" onClick="setSubMenu(submenu_eventlog, eventlogPage, eventlogContainer)" value="Eventlog" class="submenubutton">
+    </li></ul>
+    </div>
+    <div id="submenu_settings" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+        <input type="button" id="settingsPage" onClick="setSubMenu(submenu_settings, settingsPage, settingsContainer)" value="Settings" class="submenubutton">
+    </li></ul>
+    <div id="submenu_documentation" class="submenu" style="display: none;">
+    <ul class="menu"><li class="menu">
+        <input type="button" id="documentationPage" onClick="setSubMenu(submenu_documentation, documentationPage, documentationContainer)" value="Docs" class="submenubutton">
+    </li></ul>
+    </div>
+    </div>
+</div>
+</div>
+
+<div id="body" class="body">
+
+<div id="sensorContainer" class="container" style="display: none;">
+    <div id="leftSensorColumn" class="leftcolumn">
+        <table>
+            <div id="selectSensorLabel"><h3>Select sensor:</h3></div>
+            <ul id="sensorUL" class="leftcolumnul"></ul>
+        </table>
+    </div>
+    <div id="rightSensorColumn" class="rightcolumn">
+    <div class="viewTable">
+        <table class="fullWidth">
+            <thead>
+                <tr>
+                    <th class="headCell">Sensor info:</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="fullWidth">
+            <tbody>
+                <tr>
+                    <td class="labelCell">Name</td>
+                    <td class="dataCell"><div id="sensorInfoName"></div></td>
+                    
+                    <td class="labelCell">Type</td>
+                    <td class="dataCell"><div id="sensorInfoType"></div></td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">Client</td>
+                    <td class="dataCell"><div id="sensorInfoClient"></div></td>
+                    
+                    <td class="labelCell">Index</td>
+                    <td class="dataCell"><div id="sensorInfoIndex"></div></td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">Last reading</td>
+                    <td class="dataCell"><div id="sensorInfoReading"></div></td>
+                    
+                    <td class="labelCell">Last update</td>
+                    <td class="dataCell"><div id="sensorInfoUpdate"></div></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="fullWidth">
+            <div class="buttonRow">
+            </div>
+        </table>
+    </div>
+        <table>
+            <div id="sensorPlotsHolder"></div>
+        </table>
+    </div>
+</div>
+
+<div id="sensormanagementContainer" class="container" style="display: none;">
+    <form id="sensormanagementForm" method="post" action="SensorFormController">
+        <div class="viewTable">
+        <table class="fullWidth">
+            <thead>
+                <tr>
+                    <th class="headCell">Sensor management:</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="fullWidth">
+            <tbody>
+                <tr>
+                    <td class="labelCell">Name</td>
+                    <td class="dataCell"><input type="text" name="sensorName" id="sensorName"/></td>
+                    
+                    <td class="labelCell">Type</td>
+                    <td class="dataCell"><select name="sensorType" id="sensorType"></select></td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">Client</td>
+                    <td class="dataCell"><select name="sensorClient" id="sensorClient"></select></td>
+                    
+                    <td class="labelCell">Index</td>
+                    <td class="dataCell"><input name="sensorIndex" id="sensorIndex"/></td>
+                </tr>
+                <input type="hidden" name="sensorId" id="sensorId"/>
+            </tbody>
+        </table>
+        <table class="fullWidth">
+            <div class="buttonRow">
+                <input type="button" id="removeSensor" class="buttonRowItem" value="Remove" onClick="submitForm('sensormanagementForm', 402)">
+                <input type="button" id="addSensor" class="buttonRowItem" value="Add" onClick="submitForm('sensormanagementForm', 400)">
+            </div>
+        </table>
+        </div>
+    </form>
+</div>
+
+<div id="deviceContainer" class="container" style="display: none;">
+    <div id="leftDeviceColumn" class="device">
+        <ul id="deviceUL" class="deviceul"></ul>
+    </div>
+</div>
+
+<div id="devicemanagementContainer" class="container" style="display: none;">
+    <form id="devicemanagementForm" method="post" action="AddDeviceFormController">
+        <div class="viewTable">
+        <table class="fullWidth">
+            <thead>
+                <tr>
+                    <th class="headCell">Device management:</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="fullWidth">
+            <tbody>
+                <tr>
+                    <td class="labelCell">Name</td>
+                    <td class="dataCell"><input type="text" id="deviceManagementName"/></td>
+                    
+                    <td class="labelCell">Type</td>
+                    <td class="dataCell"><select id="deviceManagementType"></select></td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">Client</td>
+                    <td class="dataCell"><select id="deviceManagementClient"></select></td>
+                    
+                    <td class="labelCell">Index</td>
+                    <td class="dataCell"><input id="deviceManagementIndex"/></td>
+                </tr>
+                <input type="hidden" name="deviceId" id="deviceId"/>
+            </tbody>
+        </table>
+        <table class="fullWidth">
+            <div class="buttonRow">
+                <input type="button" id="removeDevice" class="buttonRowItem" value="Remove" onClick="submitForm('devicemanagementForm', 402)">
+                <input type="button" id="addDevice" class="buttonRowItem" value="Add" onClick="submitForm('devicemanagementForm', 400)">
+            </div>
+        </table>
+        </div>
+    </form>
+</div>
+
+<div id="taskContainer" class="container" style="display: none;">
+    <div id="leftTaskColumn" class="leftcolumn">
+        <table>
+            <div id="selectTaskLabel"><h3>Select task:</h3></div>
+            <ul id="taskUL" class="leftcolumnul"></ul>
+        </table>
+    </div>
+    
+    <div id="rightTaskColumn" class="rightcolumn">
+    <div class="viewTable">
+        <table class="fullWidth">
+            <thead>
+                <tr>
+                    <th class="headCell">Task info:</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="fullWidth">
+            <tbody>
+                <tr>
+                    <td class="labelCell">Name</td>
+                    <td class="dataCell"><div id="taskInfoName"></div></td>
+                    
+                    <td class="labelCell">Device</td>
+                    <td class="dataCell"><div id="taskInfoDevice"></div></td>
+                </tr>
+                <tr>
+                    <td class="labelCell">Action</td>
+                    <td class="dataCell"><div id="taskInfoAction"></div></td>
+                    
+                    <td class="labelCell">Events</td>
+                    <td class="dataCell"><div id="taskInfoEvents"></div></td>
+                </tr>
+                <tr>
+                    <td class="labelCell">Is permanent</td>
+                    <td class="dataCell"><div id="taskInfoIsPermanent"></div></td>
+                    
+                    <td class="labelCell"></td>
+                    <td class="dataCell"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="fullWidth">
+            <div class="buttonRow">
+            </div>
+        </table>
+   </div>
+    </div>
+</div>
+
+<div id="taskmanagementContainer" class="container" style="display: none;">
+    <form id="taskmanagementForm" method="post" action="TaskFormController">
+        <div class="viewTable">
+        <table class="fullWidth">
+            <thead>
+                <tr>
+                    <th class="headCell">Task management:</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="fullWidth">
+            <tbody>
+                <tr>
+                    <td class="labelCell">Task name:</td>
+                    <td class="dataCell"><input type="text" id="taskManagementName" class="rightcolumnitem"/></td>
+                                
+                    <td class="labelCell">Device name:</td>
+                    <td class="dataCell"><select id="taskManagementDeviceList"></select></td>
+                </tr>
+                <tr>
+                    <td class="labelCell">Task action:</td>
+                    <td class="dataCell"><select id="taskManagementExecuteActionList"></select></td>
+                                
+                    <td class="labelCell">Scheduled times:</td>
+                    <td class="dataCell"><input type="text" id="taskManagementSchedules"></input></td>
+                </tr>
+                <tr>
+                    <td class="labelCell">Is temporary task:</td>
+                    <td class="dataCell"><input type="checkbox" id="taskManagementIsTemporaryCheckbox" value="Is temporary"></input></td>
+                                
+                    <td class="labelCell"></td>
+                    <td class="dataCell"></td>
+                </tr>
+                <input type="hidden" name="taskId" id="taskId"/>
+            </tbody>
+        </table>
+    </form>
+        <table class="fullWidth">
+            <div class="buttonRow">
+                <input type="button" id="removeTask" class="buttonRowItem" value="Remove" onClick="submitForm('taskmanagementForm', 402)">
+                <!-- <input type="button" id="modifyTask" class="buttonRowItem" value="Modify" onClick="submitForm('taskmanagementForm', 401)"> -->
+                <input type="button" id="addTask" class="buttonRowItem" value="Add" onClick="submitForm('taskmanagementForm', 400)">
+            </div>
+        </table>
+        </div>
+</div>
+
+<div id="sensorcontrolContainer" class="container" style="display: none;">
+        <div id="leftSensorControlColumn" class="leftcolumn">
+            <table>
+                <div id="selectSensorControlLabel"><h3>Select sensorcontrol item:</h3></div>
+                <ul id="sensorcontrolUL" class="leftcolumnul"></ul>
+            </table>
+        </div>
+        <div id="rightSensorControlColumn" class="rightcolumn">
+            <div class="viewTable">
+                <table class="fullWidth">
+                    <thead>
+                        <tr>
+                            <th class="headCell">Sensorcontrol info:</th>
+                        </tr>
+                    </thead>
+                </table>
+                <table class="fullWidth">
+                    <tbody>
+                        <tr>
+                            <td class="labelCell">Name</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoName"></div></td>
+                            
+                            <td class="labelCell">Device</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoDevice"></div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="labelCell">Sensor</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoSensor"></div></td>
+                            
+                            <td class="labelCell">Sensor type</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoSensorType"></div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="labelCell">Last reading</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoReading"></div></td>
+                            
+                            <td class="labelCell">Last update</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoUpdate"></div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="labelCell">High threshold</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoHighThreshold"></div></td>
+                            
+                            <td class="labelCell">High threshold action</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoHighThresholdAction"></div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="labelCell">Low threshold</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoLowThreshold"></div></td>
+                            
+                            <td class="labelCell">Low threshold action</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoLowThresholdAction"></div></td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="labelCell">Is running</td>
+                            <td class="dataCell"><div id="sensorcontrolInfoIsRunning"></div></td>
+                            
+                            <td class="labelCell"></td>
+                            <td class="dataCell"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="fullWidth">
+                    <div class="buttonRow">
+                    </div>
+                </table>
+            </div>
+            
+            
+           <!-- <table>
+                <table>
+                    <div id="sensorControlManagementLabel"><h3>Sensorcontrol management:</h3></div>
+                    <td width="150">
+                    <div id="selectSensorControlActionLabel" >Select action:</div>
+                    <select id="sensorControlActionList" onchange="pickSensorControlAction()" class="rightcolumnitem"></select>
+                    <br>
+                    <input type=button onClick="executeSensorControlAction()" value="Execute" title="Execute action"></input>
+                    </td>
+                    
+                    <td>
+                    <div id="sensorControlNameLabel">Sensorcontrol name:</div>
+                    
+                    <div id="sensorControlAddForm">
+                        <input type="text" id="sensorControlName" class="rightcolumnitem"></input>
+                        <br>
+                        If sensor <select id="sensorControlSensorList" onchange="pickSensorControlSensorTypes()"></select>
+                        value is
+                        <br>
+                        more than
+                        <input type="text" id="sensorControlHighThreshold"></input>
+                        <br>
+                        <select id="sensorControlFirstActionList" onchange="pickSensorControlToggleAction(1)"></select>
+                         device <select id="sensorControlDeviceList"></select>
+                        <br>
+                        <select id="sensorControlSecondActionList" onchange="pickSensorControlToggleAction(2)"></select>
+                         at <input type="text" id="sensorControlLowThreshold"></input>
+                    </div>
+                    
+                    <div id="sensorControlDelForm">
+                        <select id="sensorControlNameList"></select>
+                    </div>
+                    
+                    <div id="sensorControlResponseLabel" class="responselabel"></div>
+                    </td>
+                </table>
+            </table> -->
+    </div>
+</div>
+
+<div id="sensorcontrolmanagementContainer" class="container" style="display: none;">
+    <form id="sensorcontrolmanagementForm" method="post" action="SensorControlFormController">
+        <div class="viewTable">
+        <table class="fullWidth">
+            <thead>
+                <tr>
+                    <th class="headCell">Sensorcontrol management:</th>
+                </tr>
+            </thead>
+        </table>
+        <table class="fullWidth">
+            <tbody>
+                <tr>
+                    <td class="labelCell">Name</td>
+                    <td class="dataCell"><input type="text" name="sensorcontrolManagementName" id="sensorcontrolManagementName"/></td>
+                    
+                    <td class="labelCell">Device</td>
+                    <td class="dataCell"><select name="sensorcontrolManagementDevice" id="sensorcontrolManagementDevice"></select></td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">Sensor</td>
+                    <td class="dataCell"><select name="sensorcontrolManagementSensor" id="sensorcontrolManagementSensor"></select></td>
+                    
+                    <td class="labelCell">Sensor type</td>
+                    <td class="dataCell"><select name="sensorcontrolManagementSensorType" id="sensorcontrolIndexType"></select</td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">High threshold</td>
+                    <td class="dataCell"><input name="sensorcontrolManagementHighThreshold" id="sensorcontrolManagementHighThreshold"/></td>
+                    
+                    <td class="labelCell">High threshold action</td>
+                    <td class="dataCell"><select name="sensorcontrolManagementHighThresholdAction" id="sensorcontrolManagementHighThresholdAction"></select></td>
+                </tr>
+                
+                <tr>
+                    <td class="labelCell">Low threshold</td>
+                    <td class="dataCell"><input name="sensorcontrolManagementLowThreshold" id="sensorcontrolManagementLowThreshold"/></td>
+                    
+                    <td class="labelCell">Low threshold action</td>
+                    <td class="dataCell"><select name="sensorcontrolManagementLowThresholdAction" id="sensorcontrolManagementLowThresholdAction"></select></td>
+                </tr>
+                <input type="hidden" name="sensorcontrolId" id="sensorcontrolId"/>
+            </tbody>
+        </table>
+        <table class="fullWidth">
+            <div class="buttonRow">
+                <input type="button" id="removeSensorcontrol" class="buttonRowItem" value="Remove" onClick="submitForm('sensorcontrolmanagementForm', 402)">
+                <input type="button" id="addSensorcontrol" class="buttonRowItem" value="Add" onClick="submitForm('sensorcontrolmanagementForm', 400)">
+            </div>
+        </table>
+        </div>
+    </form>
+</div>
+
+<div id="eventlogContainer" class="container" style="display: none;">
+    <table>
+        <div id="eventLogDataLabel" class="eventlog"></div>
+    </table>
+</div>
+
+<div id="settingsContainer" class="container" style="display: none;">
+        <table>
+            <div id="loggingIntervalLabel"><h3>Logging interval:</h3></div>
+            <div id="loggingIntervalReadingLabel"></div>
+            New interval: <input type="text" id="loggingIntervalValue"></input>
+            <input type=button onClick="changeInterval(0)" value="Execute"></input>
+            <div id="dailyplotsIntervalLabel"><h3>Daily plots interval:</h3></div>
+            <div id="dailyplotsIntervalReadingLabel"></div>
+            New interval: <input type="text" id="dailyplotsIntervalValue"></input>
+            <input type=button onClick="changeInterval(1)" value="Execute"></input>
+            <div id="weeklyplotsIntervalLabel"><h3>Weekly plots interval:</h3></div>
+            <div id="weeklyplotsIntervalReadingLabel"></div>
+            New interval: <input type="text" id="weeklyplotsIntervalValue"></input>
+            <input type=button onClick="changeInterval(2)" value="Execute"></input>
+            <div id="sensorcontrolIntervalLabel"><h3>Sensorcontrol interval:</h3></div>
+            <div id="sensorcontrolIntervalReadingLabel"></div>
+            New interval: <input type="text" id="sensorcontrolIntervalValue"></input>
+            <input type=button onClick="changeInterval(3)" value="Execute"></input>
+            <div id="eventLogLengthLabel"><h3>Eventlog length:</h3></div>
+            <div id="eventLogLengthReadingLabel"></div>
+            New length: <input type="text" id="eventLogLengthValue"></input>
+            <input type=button onClick="changeInterval(5)" value="Execute"></input>
+            <div id="shutdownLabel"><h3>Shut system down:</h3></div>
+            <input type=button onClick="changeInterval(4)" value="Execute"></input>
+            <br>
+            <br>
+            <div id="settingsResponseLabel" class="responselabel"></div>
+        </table>
+</div>
+
+<div id="documentationContainer" class="container" style="display: none;">
+        <table>
+            <iframe src="Documentation.html" width="100%" height="80%"></iframe>
+        </table>
+</div>
+
+</div>
+
+<div id="footer">
+</div>
+
+</body>
+</html>

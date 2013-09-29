@@ -1,0 +1,34 @@
+<<<<<<< HEAD
+{
+    "arduinoport": 48371, 
+    "idsequence": 1026, 
+    "verbose": true, 
+    "listenport": 8080, 
+    "weeklyplotinterval": 60, 
+    "dailyplotinterval": 30, 
+    "generateplots": true, 
+    "localip": "", 
+    "logginginterval": 5, 
+    "arduinolistenport": 48372, 
+    "eventloglength": 40, 
+    "sensorcontrolinterval": 30, 
+    "debug": true,
+    "devmode": true
+=======
+{
+    "arduinoport": 48371, 
+    "idsequence": 1026, 
+    "verbose": true, 
+    "listenport": 8080, 
+    "weeklyplotinterval": 60, 
+    "dailyplotinterval": 30, 
+    "generateplots": true, 
+    "localip": "", 
+    "logginginterval": 5, 
+    "arduinolistenport": 48372, 
+    "eventloglength": 40, 
+    "sensorcontrolinterval": 30, 
+    "debug": true,
+    "devmode": true
+>>>>>>> cbd3bf5dabe3e29b4f5be216a7b15ab66f6732ef
+}
