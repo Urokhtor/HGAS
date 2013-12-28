@@ -21,11 +21,13 @@
 from Connection import Connection
 from Protocol import Protocol
 from Scheduler import Scheduler
-from Scheduler import Task
 from Logging import Logging
 from Managers.ConfigurationManager import ConfigurationManager
 from Managers.ModuleManager import ModuleManager
 from Managers.DeviceManager import DeviceManager
+from Managers.TaskManager import TaskManager
+from Managers.SettingsManager import SettingsManager
+from Managers.ClientManager import ClientManager
 from HTTPServer import WebServer
 from Startup import Startup
 from Plot import Plot
@@ -39,8 +41,9 @@ class Core:
         Initializes all the submodules and serves as a connection point between different modules.
     """
     
-    def __init__(self):
-        #self.config = Config("configuration.json")
+    def __init__(self, justPlots = False):
+        self.__name__ = "Core"
+        
         self.configManager = ConfigurationManager()
         
         # These return True of False depending on whether loading the conf was a success.
@@ -50,15 +53,19 @@ class Core:
         self.configManager.loadConf(CONFIG_FORMS)
         
         self.moduleManager = ModuleManager(self)
+        self.clientManager = ClientManager(self)
         self.deviceManager = DeviceManager(self)
+        self.taskManager = TaskManager(self)
+        self.settingsManager = SettingsManager(self)
         self.logging = Logging(self)
         self.plot = Plot(self)
         self.protocol = Protocol()
-        self.connection = Connection(self)
-        self.scheduler = Scheduler()
-        self.webServer = WebServer(self.configManager.getConf(CONFIG_SETTINGS).getItem("localip", ""), self.configManager.getConf(CONFIG_SETTINGS).getItem("listenport", 8080))
+        if not justPlots: self.connection = Connection(self)
+        if not justPlots: self.scheduler = Scheduler()
+        if not justPlots: self.webServer = WebServer(self.configManager.getConf(CONFIG_SETTINGS).getItem("localip", ""), self.configManager.getConf(CONFIG_SETTINGS).getItem("listenport", 8080))
 
     def initialize(self):
+        self.logging.logDebug(self.__name__ + "." + "initialize")
         self.scheduler.initialize()
         
         startup = Startup(self)
@@ -68,10 +75,14 @@ class Core:
         startup.addDailyPlots()
         startup.addWeeklyPlots()
         startup.addSensorControl()
-        
+
+        #modules = []
+
+        #for moduleList in self.configManager.getConf(CONFIG_FORMS).getItem("modules", ""):
+        #    modules.append(moduleList["module"])
+
         self.moduleManager.loadModules(self.configManager.getConf(CONFIG_FORMS).getItem("modules", ""))
-        
-        self.logging.logEvent("Core: Server is back online", "green")
+
         self.webServer.setUp()
     
     def quit(self):
@@ -98,10 +109,10 @@ def main():
     if len(sys.argv) == 1:
         server = Core()
         server.initialize()
-        #server.plot.generateDailyPlots("")
-        #server.plot.generateWeeklyPlots("")
         
         while 1:
+            tmp = input("")
+            print("You gave: " + tmp)
             sleep(0.1)
     
     # Adds an encrypted user and password pair.
@@ -130,7 +141,23 @@ def main():
         json.dump(tmp, f, indent = 4)
         f.close()
         print("Added auth")
-            
+    
+    # Start the server for plot generation, generate them and exit.
+    elif sys.argv[1] == "plot":
+        server = Core(True)
+        
+        if len(sys.argv) == 2 or sys.argv[2] == "day":
+            print("Generating daily plots...")
+            server.plot.generateDailyPlots("")
+        
+        if len(sys.argv) == 2 or sys.argv[2] == "week":
+            print("Generating weekly plots...")
+            server.plot.generateWeeklyPlots("")
+        
+        print("\nDone generating, exiting...")
+        
+        from os import _exit
+        _exit(0)
     
 
 if __name__ == "__main__":

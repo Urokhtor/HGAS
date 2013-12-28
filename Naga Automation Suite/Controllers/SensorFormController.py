@@ -14,14 +14,6 @@ class SensorFormController(FormController):
         if not "action" in request:
             return '{"' + KEY_REJECT + '": {"id": "action", "reason": "Action was not supplied"}}'
         
-        """
-        try:
-            request["action"] = int(request["action"])
-        except ValueError:
-            # Reject because wrong type
-            pass
-        """
-        
         if not "object" in request:
             return '{"' + KEY_REJECT + '": {"id": "object", "reason": "Sensor object was not supplied"}}'
             

@@ -65,16 +65,16 @@ class Startup:
                         break
                 
                 if device:
-                    if task["actiontype"] == SEND_ENABLE:
-                        actionType = (device["clientname"], self.parent.protocol.writeEnable(device["id"], device["index"]))
+                    if task["action"] == SEND_ENABLE:
+                        action = (device["clientname"], self.parent.protocol.writeEnable(device["id"], device["index"]))
                         
-                    elif task["actiontype"] == SEND_ENABLE:
-                        actionType = (device["clientname"], self.parent.protocol.writeDisable(device["id"], device["index"]))
+                    elif task["action"] == SEND_ENABLE:
+                        action = (device["clientname"], self.parent.protocol.writeDisable(device["id"], device["index"]))
                     
-                    elif task["actiontype"] == SEND_WRITE:
-                        actionType = (device["clientname"], self.parent.protocol.write(device["id"], device["index"]))
+                    elif task["action"] == SEND_WRITE:
+                        action = (device["clientname"], self.parent.protocol.write(device["id"], device["index"]))
                     
-                    newTask = Task(task["name"], "write", actionType, device["index"], 1, self.parent.connection.send)
+                    newTask = Task(task["name"], "write", action, device["index"], 1, self.parent.connection.send)
                 
                 else:
                     self.parent.logging.logEvent("Startup error: Can't add task " + task["name"] + ", device " + deviceName + " doesn't exist", "red")
@@ -127,6 +127,9 @@ class Startup:
             Task which generates daily plots for the sensors.
         """
         
+        if not self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("generateplots", True):
+            return
+        
         task = Task("dailyplots", "plot", "", 0, 3, self.parent.plot.generateDailyPlots)
 
         time = 0
@@ -142,6 +145,9 @@ class Startup:
         """
             Task which generates weekly plots for the sensors.
         """
+        
+        if not self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("generateplots", True):
+            return
         
         task = Task("weeklyplots", "plot", "", 0, 3, self.parent.plot.generateWeeklyPlots)
 

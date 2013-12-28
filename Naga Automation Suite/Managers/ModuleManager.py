@@ -32,10 +32,17 @@ class ModuleManager:
         """
             Attempts to load all the modules specified in the parent config file.
         """
-        
-        for module in config:
-            self.loadModule(module)
-        
+
+        if type(config) is list:
+            for obj in config:
+                if not self.loadModule(obj["module"]):
+                    self.parent.logging.logEvent("ModuleManager: Couldn't load module " + obj["module"], "red")
+
+        elif type(config) is dict:
+            for module in config:
+                if not self.loadModule(module):
+                    self.parent.logging.logEvent("ModuleManager: Couldn't load module " + module, "red")
+
     def loadModule(self, moduleName):
         """
             Attempts to load a module from IRCCommand subfolder and stores the module in a dict

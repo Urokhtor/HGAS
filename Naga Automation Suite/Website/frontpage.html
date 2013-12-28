@@ -1,19 +1,19 @@
 <html>
 <head>
 <title>Naga Automation Suite control interface</title>
-<link href="styles.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<link href="../styles/styles.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../scripts/jquery-1.10.2.min.js"></script>
 </head>
 <body>
-<script type="text/javascript" charset="utf-8" language="JavaScript" src="ControlInterface.js"></script>
+<script type="text/javascript" charset="utf-8" language="JavaScript" src="../scripts/ControlInterface.js"></script>
 
 <div id="header" class="header">
     <header>
-        <img src="test.png" width="1000" height="144" alt="I accidentally in my interbutts!"/>
+        <img src="../images/test.png" width="1000" height="144" alt="I accidentally in my interbutts!"/>
     </header>
 </div>
 
-<div class="menubackbround">
+<div class="menubackground">
 <div id="menu" class="menu">
     <ul class="menu">
     <li class="menu"><input type=button id="sensorsButton" onClick="setMenu(submenu_sensor, sensorsButton)" value="Sensors" class="menubutton"></li>
@@ -26,7 +26,7 @@
     </ul>
 </div>
 
-<div id="submenu" class="menubackbround">
+<div id="submenu" class="menubackground">
     <div id="submenu_sensor" class="submenu" style="display: none;">
     <ul class="menu"><li class="menu">
             <input type="button" id="sensorPage" onClick="setSubMenu(submenu_sensor, sensorPage, sensorContainer)" value="Info" class="submenubutton">
@@ -240,21 +240,21 @@
             <tbody>
                 <tr>
                     <td class="labelCell">Name</td>
-                    <td class="dataCell"><div id="taskName"></div></td>
+                    <td class="dataCell"><div id="taskInfoName"></div></td>
                     
                     <td class="labelCell">Device</td>
-                    <td class="dataCell"><div id="taskDevice"></div></td>
+                    <td class="dataCell"><div id="taskInfoDevice"></div></td>
                 </tr>
                 <tr>
                     <td class="labelCell">Action</td>
-                    <td class="dataCell"><div id="taskAction"></div></td>
+                    <td class="dataCell"><div id="taskInfoAction"></div></td>
                     
                     <td class="labelCell">Events</td>
-                    <td class="dataCell"><div id="taskEvents"></div></td>
+                    <td class="dataCell"><div id="taskInfoEvents"></div></td>
                 </tr>
                 <tr>
                     <td class="labelCell">Is permanent</td>
-                    <td class="dataCell"><div id="taskIsPermanent"></div></td>
+                    <td class="dataCell"><div id="taskInfoIsPermanent"></div></td>
                     
                     <td class="labelCell"></td>
                     <td class="dataCell"></td>
@@ -263,8 +263,6 @@
         </table>
         <table class="fullWidth">
             <div class="buttonRow">
-                <input type="button" id="removeTask" class="buttonRowItem" value="Remove" onClick="submitForm('taskmanagementForm', 402)">
-                <input type="button" id="addTask" class="buttonRowItem" value="Add" onClick="submitForm('taskmanagementForm', 400)">
             </div>
         </table>
    </div>
@@ -288,18 +286,18 @@
                     <td class="dataCell"><input type="text" id="taskManagementName" class="rightcolumnitem"/></td>
                                 
                     <td class="labelCell">Device name:</td>
-                    <td class="dataCell"><select id="taskDeviceList"></select></td>
+                    <td class="dataCell"><select id="taskManagementDeviceList"></select></td>
                 </tr>
                 <tr>
                     <td class="labelCell">Task action:</td>
-                    <td class="dataCell"><select id="taskExecuteActionList"></select></td>
+                    <td class="dataCell"><select id="taskManagementExecuteActionList"></select></td>
                                 
                     <td class="labelCell">Scheduled times:</td>
-                    <td class="dataCell"><input type="text" id="taskSchedules"></input></td>
+                    <td class="dataCell"><input type="text" id="taskManagementSchedules"></input></td>
                 </tr>
                 <tr>
                     <td class="labelCell">Is temporary task:</td>
-                    <td class="dataCell"><input type="checkbox" id="taskIsTemporaryCheckbox" value="Is temporary"></input></td>
+                    <td class="dataCell"><input type="checkbox" id="taskManagementIsTemporaryCheckbox" value="Is temporary"></input></td>
                                 
                     <td class="labelCell"></td>
                     <td class="dataCell"></td>
@@ -307,15 +305,15 @@
                 <input type="hidden" name="taskId" id="taskId"/>
             </tbody>
         </table>
+    </form>
         <table class="fullWidth">
             <div class="buttonRow">
                 <input type="button" id="removeTask" class="buttonRowItem" value="Remove" onClick="submitForm('taskmanagementForm', 402)">
-                <input type="button" id="modifyTask" class="buttonRowItem" value="Modify" onClick="submitForm('taskmanagementForm', 401)">
+                <!-- <input type="button" id="modifyTask" class="buttonRowItem" value="Modify" onClick="submitForm('taskmanagementForm', 401)"> -->
                 <input type="button" id="addTask" class="buttonRowItem" value="Add" onClick="submitForm('taskmanagementForm', 400)">
             </div>
         </table>
         </div>
-    </form>
 </div>
 
 <div id="sensorcontrolContainer" class="container" style="display: none;">

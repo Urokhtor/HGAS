@@ -24,7 +24,6 @@ from datetime import datetime
 from Constants import *
 import json
 from os import listdir
-from inspect import stack
 
 class Logging:
     """
@@ -43,7 +42,7 @@ class Logging:
         """
             Returns a list of files that exist.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "getFiles")
         
     
         return listdir("Logs/")
@@ -52,7 +51,7 @@ class Logging:
         """
             Returns the data stored in a file.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "getSensorFileData")
         
         tmp = []
         startTime = 0
@@ -96,8 +95,7 @@ class Logging:
         """
             Sends a request to get the reading for one sensor supplied as the parameter.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
-        
+        self.parent.logging.logDebug(self.__name__ + "." + "getSensorReading")
         
         return self.parent.connection.send((sensor["clientname"], self.parent.protocol.readSensor(sensor["id"], sensor["index"])))
     
@@ -105,7 +103,7 @@ class Logging:
         """
             Loops through all the sensors and polls their reading separately.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "getSensorReadings")
         
         tmp = []
         
@@ -118,7 +116,7 @@ class Logging:
         """
             Returns the defined number of lines from eventlog.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "getEventLogLatestMessages")
         
         
         tmp = []
@@ -151,7 +149,7 @@ class Logging:
         return tmp
 
     def logMessage(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logMessage")
         
         try:
             if KEY_ERROR in response:
@@ -185,7 +183,7 @@ class Logging:
             self.logEvent("Log message error: " + str(e), "red")
             
     def logError(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logError")
         
         if response[KEY_ERROR] == NO_COMMAND_ERROR:
             self.logEvent("Log message error: Received error with ID " + str(NO_COMMAND_ERROR), "red")
@@ -225,7 +223,7 @@ class Logging:
             self.logEvent("Log message error: Received error with ID " + str(PUMP_DOESNT_EXIST_ERROR), "red")
     
     def logRead(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logRead")
         
         sensor = self.parent.deviceManager.getSensorById(request[KEY_ID])
         
@@ -249,7 +247,7 @@ class Logging:
                 return
                 
     def logWrite(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logWrite")
         
         device = self.parent.deviceManager.getDeviceById(request[KEY_ID])
         
@@ -280,7 +278,7 @@ class Logging:
             self.logEvent("Log message error: Response to insert action was not of correct type", "red")
     
     def logInsert(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logInsert")
         
         if response[KEY_RESPONSE] == INSERT_SENSOR_SUCCESS:
             sensor = self.parent.deviceManager.getSensorById(request[KEY_ID])
@@ -314,7 +312,7 @@ class Logging:
             self.logEvent("Log message error: Response to insert action was not of correct type", "red")
     
     def logModify(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logModify")
         
         if response[KEY_RESPONSE] == MODIFY_SENSOR_SUCCESS:
             sensor = self.parent.deviceManager.getDeviceById(request[KEY_ID])
@@ -342,7 +340,7 @@ class Logging:
             self.logEvent("Log message error: Response to modify action was not of correct type", "red")
     
     def logRemove(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logRemove")
         
         if response[KEY_RESPONSE] == REMOVE_SENSOR_SUCCESS:
             sensor = self.parent.deviceManager.getSensorById(request[KEY_ID])
@@ -370,7 +368,7 @@ class Logging:
             self.logEvent("Log message error: Response to insert action was not of correct type", "red")
     
     def logFreeMemory(self, response, client, request):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "logFreeMemory")
         
         if response[KEY_RESPONSE] == READ_FREEMEMORY_SUCCESS:
             self.logEvent("Received message: Arduino client " + client + "'s free memory is " + response[KEY_READING] + " KiB", "green")
@@ -379,7 +377,7 @@ class Logging:
             self.logEvent("Log message error: Response to free memory was not of correct type", "red")
     
     def createMessage(self, response):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "createMessage")
         
         device = self.parent.deviceManager.getDeviceById(response[KEY_ID])
             
@@ -394,7 +392,16 @@ class Logging:
         
         else:
             return None, None
-    
+
+    def info(self, message):
+        self.logEvent(message, "green")
+
+    def notice(self, message):
+        self.logEvent(message, "yellow")
+
+    def error(self, message):
+        self.logEvent(message, "red")
+
     def logEvent(self, message, colour = "black"):
         """
             The standard logger function which takes the message as an argument and writes it to the

@@ -26,7 +26,6 @@ use("Agg", warn = False)
 import matplotlib.pyplot as plt
 from datetime import datetime
 from Constants import SENSOR_TYPE_DEFAULT, SENSOR_TYPE_TEMPERATURE, SENSOR_TYPE_DHT11, SENSOR_TYPE_SR04, PLOT_DAY, PLOT_WEEK
-from inspect import stack
 
 class Plot:
     
@@ -34,13 +33,61 @@ class Plot:
         self.__name__ = "Plot"
         self.parent = parent
         self.folder = "Plots/"
+    
+    def generateSensorDailyPlot(self, sensorID):
+        """
+            Takes the ID of one sensor and then generates the daily data plot if it's found.
+            
+            Returns True if the plot was generated successfully and False if it failed.
+        """
+        
+        self.parent.logging.logDebug(self.__name__ + "." + "generateSensorDailyPlot")
+        
+        files = self.parent.logging.getFiles()
+        
+        # Perhaps optimise this so that we only need to get that one file. Get the sensor object and
+        # generate the file name out of that information since it's always the same.
+        for file in files:
+            if file.find(sensorID) != -1:
+                self.parent.deviceManager.getSensorById(sensorID)
+                try:
+                    self.generateDay(self.parent.logging.getSensorFileData(file, PLOT_DAY), file.split(".csv")[0], sensor)
+                    return True
+                    
+                except Exception as e:
+                    self.parent.logging.logEvent("GenerateSensorDailyPlots ecountered an error: " + str(e) + ", sensor: " + sensor["name"], "red")
+                    return False
+                    
+    def generateSensorWeeklyPlot(self, sensorID):
+        """
+            Takes the ID of one sensor and then generates the weekly data plot if it's found
+            
+            Returns True if the plot was generated successfully and False if it failed.
+        """
+        
+        self.parent.logging.logDebug(self.__name__ + "." + "generateSensorWeeklyPlot")
+        
+        files = self.parent.logging.getFiles()
+        
+        # Perhaps optimise this so that we only need to get that one file. Get the sensor object and
+        # generate the file name out of that information since it's always the same.
+        for file in files:
+            if file.find(sensorID) != -1:
+                self.parent.deviceManager.getSensorById(sensorID)
+                try:
+                    self.generateWeek(self.parent.logging.getSensorFileData(file, PLOT_WEEK), file.split(".csv")[0], sensor)
+                    return True
+                    
+                except Exception as e:
+                    self.parent.logging.logEvent("GenerateSensorWeeklyPlots ecountered an error: " + str(e) + ", sensor: " + sensor["name"], "red")
+                    return False
 
     def generateDailyPlots(self, params):
         """
             Fetches the sensor logging files and loops through them, generating daily plots for each of the
             sensors.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "generateDailyPlots")
         
         
         files = self.parent.logging.getFiles()
@@ -57,7 +104,8 @@ class Plot:
             except Exception as e:
                 self.parent.logging.logEvent("Plot error: Misnamed file, error message: " + str(e), "red")
                 continue
-                
+            
+            # Perhaps we should use the deviceManager instead to get the sensor.
             for sensor in self.parent.deviceManager.getSensors():
                 if sensor["id"] == int(id):
                     try:
@@ -75,7 +123,7 @@ class Plot:
             Fetches the sensor logging files and loops through them, generating weekly plots for each of the
             sensors.
         """
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "generateWeeklyPlots")
         
         
         files = self.parent.logging.getFiles()
@@ -94,6 +142,7 @@ class Plot:
                 self.parent.logging.logEvent("Plot error: Misnamed file, error message: " + str(e), "red")
                 continue
                 
+            # Perhaps we should use the deviceManager instead to get the sensor.
             for sensor in self.parent.deviceManager.getSensors():
                 if sensor["id"] == int(id):
                     try:
@@ -107,7 +156,7 @@ class Plot:
                     break
                     
     def generateDay(self, data, file, sensor):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "generateDay")
         
         currTime = data[0][0]
         
@@ -208,7 +257,7 @@ class Plot:
         plt.close()
         
     def generateWeek(self, data, file, sensor):
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "generateWeek")
         
         currTime = data[0][0]
         

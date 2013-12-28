@@ -24,7 +24,6 @@ from threading import Thread
 import json
 import Utils
 from Constants import *
-from inspect import stack
 
 class Connection:
     """
@@ -38,12 +37,12 @@ class Connection:
         self.parent = parent
         self.running = True
         
-        self.clients = parent.configManager.getConf(CONFIG_CORE).getItem("clients", "")
-        self.hostAddress = parent.configManager.getConf(CONFIG_SETTINGS).getItem("localip", "") # Your own home network address.
+        #self.clients = parent.configManager.getConf(CONFIG_CORE).getItem("clients", "")
+        #self.hostAddress = parent.configManager.getConf(CONFIG_SETTINGS).getItem("localip", "") # Your own home network address.
         self.port = parent.configManager.getConf(CONFIG_SETTINGS).getItem("arduinoport", 48371)
         self.listenPort = parent.configManager.getConf(CONFIG_SETTINGS).getItem("arduinolistenport", 48372)
         
-        self.updateThread = Thread(target = self.listenArduinos).start()
+        #self.updateThread = Thread(target = self.listenArduinos).start()
         self.webserverThread = Thread(target = self.webserver).start()
 
     def listenArduinos(self):
@@ -55,7 +54,7 @@ class Connection:
         """
         
         serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        serverSocket.bind((self.hostAddress, self.listenPort))
+        serverSocket.bind((self.getLocalIP(), self.listenPort))
         serverSocket.settimeout(1) # Use nonblocking socket so the thread doens't get stuck waiting for incoming traffic.
         
         while self.running:
@@ -64,7 +63,7 @@ class Connection:
                 conn, addr = serverSocket.accept()
             
             except socket.timeout:
-                sleep(0.1)
+                sleep(0.01)
                 continue
                 
             data = conn.recv(4096)
@@ -73,12 +72,12 @@ class Connection:
             response = json.loads(data.decode("UTF-8").strip())
             client, request = self.parent.logging.createMessage(response)
             
-            if client == None or request == None:
-                sleep(0.1)
+            if client is None or request is None:
+                sleep(0.01)
                 continue
                 
             self.parent.logging.logMessage(response, client, request)
-            sleep(0.1)
+            sleep(0.01)
     
     def webserver(self):
         """
@@ -86,7 +85,7 @@ class Connection:
         """
         
         serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        serverSocket.bind((self.hostAddress, 6718))
+        serverSocket.bind((self.getLocalIP(), 6719))
         serverSocket.settimeout(1) # Use nonblocking socket so the thread doens't get stuck waiting for incoming traffic.
         
         while self.running:
@@ -95,14 +94,14 @@ class Connection:
                 conn, addr = serverSocket.accept()
             
             except socket.timeout:
-                sleep(0.1)
+                sleep(0.01)
                 continue
                 
             try:
                 data = conn.recv(16384)
             
             except:
-                sleep(0.1)
+                sleep(0.01)
                 continue
             
             if not data: continue
@@ -146,7 +145,7 @@ class Connection:
                 elif request.startswith("getFreeMemory"):
                     tmp = Utils.getFreeMemory(self.parent, request)
                     
-                if tmp == None:
+                if tmp is None:
                     tmp = "Action returned NoneType"
                 
             except Exception as e:
@@ -171,7 +170,7 @@ class Connection:
             Attempts to send a message to the Arduino.
         """
         
-        self.parent.logging.logDebug(self.__name__ + "." + stack()[0][3])
+        self.parent.logging.logDebug(self.__name__ + "." + "send")
         
         s = None
         response = ""
@@ -185,7 +184,7 @@ class Connection:
         
         try:
             s.settimeout(5)
-            s.connect((self.clients[message[0]], self.port))
+            s.connect((self.parent.clientManager.getByName(message[0]), self.port))
         except socket.error as e:
             s.close()
             s = None
@@ -223,4 +222,6 @@ class Connection:
         s.close()
         s = None
         return response
-    
+
+    def getLocalIP(self):
+        return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]

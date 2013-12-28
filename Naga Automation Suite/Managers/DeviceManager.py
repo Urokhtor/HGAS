@@ -1,16 +1,8 @@
+from Managers.BaseManager import BaseManager
 from time import time
 from Constants import *
 
-class DeviceManager:
-
-    def __init__(self, parent):
-        self.parent = parent
-    
-    def getNextId(self):
-        currentId = self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("idsequence", None)
-        nextId = currentId + 1
-        self.parent.configManager.getConf(CONFIG_SETTINGS).setItem("idsequence", nextId)
-        return nextId
+class DeviceManager(BaseManager):
         
     def updateSensorReading(self, id, reading):
         sensor = self.getSensorById(id)
@@ -20,6 +12,13 @@ class DeviceManager:
             
         sensor["lastreading"] = reading
         sensor["lastupdated"] = int(time()) # Unix time.
+
+        if sensor["alltimemax"] < reading:
+            sensor["alltimemax"] = reading
+
+        elif sensor["alltimemin"] > reading:
+            sensor["alltimemin"] = reading
+
         sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
         self.parent.configManager.getConf(CONFIG_CORE).setItem("sensors", sensors)
         return True
@@ -49,6 +48,8 @@ class DeviceManager:
         sensor["clientname"] = clientname
         sensor["lastreading"] = 0
         sensor["lastupdated"] = 0
+        sensor["alltimemax"] = 0
+        sensor["alltimemin"] = 0
         sensor["id"] = self.getNextId()
         
         return sensor
@@ -148,32 +149,51 @@ class DeviceManager:
         return self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
     
     def getSensorById(self, id):
+
+        return self._getById("sensors", id)
+
+        """
         sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
         
-        if not id == None:
+        if not id is None:
             for sensor in sensors:
                 if sensor["id"] == id:
                     return sensor
-            
-        else:
-            return None
+
+        return None
+        """
 
     def getDeviceById(self, id):
+
+        return self._getById("devices", id)
+
+        """
         devices = self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
             
-        if not id == None:
+        if not id is None:
             for device in devices:
                 if device["id"] == id:
                     return device
         
-        else:
-            return None
-            
+        return None
+        """
+
+    def getSensorByName(self, name):
+
+        return self._getByName("sensors", name)
+
+    def getDevicesByName(self, name):
+
+        return self._getByName("devices", name)
+
     def hasSensor(self, id):
         """
             Checks if the sensor list has a sensor with given unique ID.
         """
-        
+
+        return self._has("sensors", id)
+
+        """
         sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
         
         if sensors is None: return False
@@ -183,10 +203,15 @@ class DeviceManager:
                 return True
                 
         return False
-    
+        """
+
     def hasDevice(self, id):
         """
             Checks if the device list has a device with given unique ID.
+        """
+
+        return self._has("devices", id)
+
         """
         devices = self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
         
@@ -197,13 +222,17 @@ class DeviceManager:
                 return True
                 
         return False
-    
+        """
+
     def hasSensorByName(self, name):
         """
             Checks if the sensor list has a sensor with given name. Largely needed when adding new sensors
             that don't yet have an ID assigned to them.
         """
-        
+
+        return self._hasByName("sensors", name)
+
+        """
         sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
         
         for sensor in sensors:
@@ -211,18 +240,22 @@ class DeviceManager:
                 return True
                 
         return False
-    
+        """
+
     def hasDeviceByName(self, name):
         """
             Checks if the device list has a device with given name. Largely needed when adding new devices
             that don't yet have an ID assigned to them.
         """
-        
+
+        return self._hasByName("devices", name)
+
+        """
         devices = self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
         
         for device in devices:
             if device["name"] == name:
                 return True
-                
+
         return False
-        
+        """

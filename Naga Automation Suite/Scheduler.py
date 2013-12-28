@@ -35,15 +35,15 @@ class Scheduler:
         self.midnightReset = False
         self.taskManager = TaskManager()
         
-        self.updateThread = Thread(target=self.update).start()
+        self.updateThread = None
     
     def initialize(self):
         """
-            In the beginning check through tasks and find the task event that needs to be executed
-            the soonest.
+            Initialize the scheduler by starting the thread.
         """
         
-        self.taskManager.findNextTask()
+        self.updateThread = Thread(target=self.update).start()
+        #self.taskManager.findNextTask()
     
     def terminate(self):
         self.running = False
@@ -79,7 +79,7 @@ class Scheduler:
                 traceback.print_exc()
                 continue
                 
-            sleep(0.4)
+            sleep(0.1)
         
 class TaskManager:
     """

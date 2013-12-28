@@ -23,10 +23,12 @@ import os
 import socket
 import json
 import ssl
-from socketserver import BaseServer
+from socketserver import BaseServer, ThreadingMixIn
 from hashlib import sha512
+import traceback
+from time import time
 
-class HTTPSServer(HTTPServer):
+class HTTPSServer(ThreadingMixIn, HTTPServer):
     def __init__(self, address, handler):
         BaseServer.__init__(self, address, handler)
         
@@ -39,9 +41,12 @@ class requestHandler(BaseHTTPRequestHandler):
         Custom requesthandler for handling webUI requests. A login system is also implemented.
     """
     
-    f = open("Conf/settings.json", "r")
-    localip = json.load(f)["localip"]
-    f.close()
+    #f = open("Conf/settings.json", "r")
+    #localip = json.load(f)["localip"]
+    #f.close()
+
+    # Get the LAN IP of the machine we're running on.
+    localip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
 
     def do_HEAD(self):
         """
@@ -58,7 +63,7 @@ class requestHandler(BaseHTTPRequestHandler):
             Server requests to fetch web information, such as the frontpage and the JavaScript file and
             images.
         """
-        
+
         if self.validateAuth():
             rootdir = "Website/" #file location
             
@@ -66,17 +71,25 @@ class requestHandler(BaseHTTPRequestHandler):
                 if "?" in self.path:
                     self.handlePost(self.path.split("?", 1)[1])
                     return
-                
+
+                begin = time()
+
                 # If the requested file is an image, it's a graph so fetch it from the Plots-folder. Otherwise
                 # server the request from Website-folder.
                 if self.path == "/": self.path = "frontpage.html"
-                elif self.path.endswith(".png"): rootdir = "Plots/"
+                elif self.path.endswith(".png") and "test" not in self.path: rootdir = "Plots/"
+                
+                #self.path = self.path.replace("/", "")
+                tmp = ""
+                
+                if "/" in self.path:
+                    tmp, self.path = self.path.rsplit("/", 1)
+                
                 self.path = self.path.replace("/", "")
-                files = os.listdir(rootdir)
+                
+                files = os.listdir(rootdir + tmp + "/")
                 
                 if self.path in files:
-                    f = None
-                    
                     # Send code 200 response
                     self.send_response(200)
                     
@@ -84,14 +97,14 @@ class requestHandler(BaseHTTPRequestHandler):
                     if self.path.endswith(".png"):
                         self.end_headers()
                         
-                        f = open("Plots/" + self.path, "rb")
+                        f = open(rootdir + tmp + "/" + self.path, "rb")
                         try: self.wfile.write(f.read())
                         except: return # Broken pipe probably
                         f.close()
                         return
                         
                     else:
-                        f = open(rootdir + self.path) # Open requested file
+                        f = open(rootdir + tmp + "/" + self.path) # Open requested file
 
                     # Send header first
                     self.send_header('Content-type','text-html')
@@ -102,6 +115,9 @@ class requestHandler(BaseHTTPRequestHandler):
                     except: return # Broken pipe probably
                         
                     f.close()
+
+                    print("Serving GET request took: " + str(time()-begin) + " s")
+
                     return
                 
             except IOError:
@@ -118,23 +134,32 @@ class requestHandler(BaseHTTPRequestHandler):
         """
             Serve posts which are webUI's requests to fetch data from the server or commands sent from it.
         """
-        
+
+        begin = time()
+
         self.send_response(200)
         self.end_headers()
-        
+
         s = None
         
         # Try to create a socket object.
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error as e:
+            print("HTTPServer error: " + str(e))
+            traceback.print_exc()
+
             s = None
             return
         
         # Try to connect to the internal webserver handler.
         try:
-            s.connect((self.localip, 6718))
+            #s.connect((self.localip, 6718))
+            s.connect((self.localip, 6719))
         except socket.error as e:
+            print("HTTPServer error: " + str(e))
+            traceback.print_exc()
+
             s.close()
             s = None
             return
@@ -144,7 +169,10 @@ class requestHandler(BaseHTTPRequestHandler):
             s.sendall(request.encode("UTF-8", "replace"))
             result = s.recv(16384)
         
-        except:
+        except Exception as e:
+            print("HTTPServer error: " + str(e))
+            traceback.print_exc()
+
             s.close()
             s = None
             return
@@ -155,7 +183,9 @@ class requestHandler(BaseHTTPRequestHandler):
         # Write the result back to the webUI and return.
         try: self.wfile.write(result)
         except: return # Broken pipe probably
-        
+
+        print("Serving POST request took: " + str(time()-begin) + " s")
+
         return
     
     def validateAuth(self):
@@ -174,7 +204,7 @@ class requestHandler(BaseHTTPRequestHandler):
         auth = self.headers["Authorization"]
         authPass = ""
         
-        if auth == None: return False
+        if auth is None: return False
         
         # Process the given auth and encrypt it so we can compare the given user and password to the one
         # stored in the database.

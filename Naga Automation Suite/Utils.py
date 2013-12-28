@@ -20,20 +20,38 @@
 
 import json
 from Scheduler import Task
-from time import sleep
 from Constants import *
+
+from time import time
+from os import path
 
 def dispatchRequest(parent, request):
     if not "type" in request or not "name" in request:
         return "" # Return some error.
-        
+
+    parent.logging.logDebug("Serving request: " + json.dumps(request))
+
+    # Reload the module if needed and then load it for execution.
+    try:
+        # For debugging purposes reload changes made to the controller. Later on
+        # make the front end support reloading modules.
+        reloadIfNeeded(parent, request["name"])
+        tmp = time()
+        module = parent.moduleManager.getModule("Controllers." + request["name"])
+        parent.logging.logDebug("Getting module " + "Controllers." + request["name"] + " took: " + str(time()-tmp))
+
+    except Exception as e:
+        parent.logging.logDebug("Add error logging here in the dispatchRequest")
+        parent.logging.logDebug(str(e))
+        return '{"' + KEY_ERROR + '": "An error occurred: ' + str(e) + '"}'
+
     if request["type"] == TYPE_FORM:
         try:
-            module = parent.moduleManager.getModule("Controllers." + request["name"])
             reject = {}
             response = {}
             
             if not module is None:
+                #module.fetchResource()
                 # Validate the form data and do type conversions.
                 module.validate(parent, request, reject)
                     
@@ -43,17 +61,60 @@ def dispatchRequest(parent, request):
                 
                 # If validation was a success, handle the form data.
                 return module.handleSubmit(parent, request, response)
+            
+            else:
+                return '{"' + KEY_ERROR + '": "Couldn\'t find module ' + request["name"] + '"}'
         
         except Exception as e:
-            print("Add error logging here in the dispatchRequest")
-            print(str(e))
-            return '{"' + KEY_ERROR + '": "An error occurred: "' + str(e) + '}'
+            parent.logging.logDebug("Add error logging here in the dispatchRequest")
+            parent.logging.logDebug(str(e))
+            return '{"' + KEY_ERROR + '": "An error occurred: ' + str(e) + '"}'
+    
+    elif request["type"] == TYPE_VIEW:
+        try:
+            #reject = {}
+            response = {}
             
+            if not module is None:
+                # Load the file and handle licences (show/hide some options on the page) etc.
+                #module.fetchResources(parent, request, response)
+
+                # Handle the page request.
+                return module.handleRequest(parent, request, response)
+            
+            else:
+                return '{"' + KEY_ERROR + '": "Couldn\'t find module ' + request["name"] + '"}'
+            
+        except Exception as e:
+            parent.logging.logDebug("Add error logging here in the dispatchRequest")
+            parent.logging.logDebug(str(e))
+            return '{"' + KEY_ERROR + '": "An error occurred: ' + str(e) + '"}'
+    
     elif request["type"] == TYPE_GET:
         # Some getSensors() etc. stuff here.
+        # I don't know if it's really needed. TYPE_VIEW should be able to handle it all.
         print("Derp")
         
     return ""
+
+def reloadIfNeeded(parent, name):
+    tmp = time()
+    modifyTime = path.getmtime("Controllers/" + name + ".py")
+    modules = parent.configManager.getConf(CONFIG_FORMS).getItem("modules", "")
+
+    for module in modules:
+        if module["module"] == "Controllers." + name:
+            # We don't know when the file was modified last time so initialize a value.
+            if not "lastmodify" in module:
+                module["lastmodify"] = 0
+
+            # Dynamically reload the module because the file has been modified and we want the latest version.
+            if module["lastmodify"] < modifyTime:
+                parent.moduleManager.reloadModule("Controllers." + name)
+                module["lastmodify"] = modifyTime
+                parent.configManager.getConf(CONFIG_FORMS).setItem("modules", modules)
+                parent.logging.logDebug("Reoading module " + "Controllers." + name + " took: " + str(time()-tmp))
+                break
     
 def getSensors(parent):
     """
@@ -82,7 +143,6 @@ def controlDevice(parent, request):
     """
     
     command, index, action = request.split(";")
-    device = None
     
     try:
         index = int(index)
@@ -98,6 +158,8 @@ def controlDevice(parent, request):
         
     for device in parent.deviceManager.getDevices():
         if device["index"] == index:
+            result = ""
+
             if action == SEND_ENABLE:
                 result = parent.connection.send((device["clientname"], parent.protocol.writeEnable(device["id"], index)))
             
@@ -146,7 +208,7 @@ def sensorControl(parent, request):
                 device = _device
         
         # Sensorcontrol can't work if device is not found, return and inform the user about it.
-        if device == None:
+        if device is None:
             parent.logging.logEvent("SensorControl failed: Couldn't find device with name " + deviceName, "red")
             return "Couldn't find device with name " + deviceName
             
@@ -155,7 +217,7 @@ def sensorControl(parent, request):
                 sensor = _sensor
         
         # Sensorcontrol can't work if sensor is not found, return and inform the user about it.
-        if sensor == None:
+        if sensor is None:
             parent.logging.logEvent("SensorControl failed: Couldn't find sensor with name " + sensorName, "red")
             return "Couldn't find sensor with name " + sensorName
                 
@@ -214,7 +276,6 @@ def sensorControl(parent, request):
             parent.logging.logEvent("SensorControl: Successfully modified sensorcontrol " + line[2], "green")
             return "Successfully modified sensorcontrol " + line[2]
         
-        
     elif line[1] == "del":
         sensorControl = parent.configManager.getConf(CONFIG_CORE).getItem("sensorcontrol", "")
         
@@ -251,7 +312,7 @@ def executeSensorControl(parent):
                 task["lastupdated"] = sensor["lastupdated"]
                 break
         
-        if lastReading == None:
+        if lastReading is None:
             parent.logging.logEvent("ExecuteSensorControl: Failed to execute task " + task["name"] + ": Couldn't find reading", "red")
             continue
         
@@ -308,7 +369,6 @@ def getTasks(parent):
             tmplist = None
             deviceName = ""
             events = ""
-            action = 0
             
             for _device in parent.deviceManager.getDevices():
                 if _device["index"] == task.getPort():
@@ -501,7 +561,7 @@ def settings(parent, request):
     """
     
     try:
-        command, type, value = request.split(";", 2)
+        command, settingType, value = request.split(";", 2)
         value = int(value)
     
     except Exception as e:
@@ -509,7 +569,7 @@ def settings(parent, request):
         return "Settings error: " + str(e)
     
     # Sensor logging interval.
-    if type == "logginginterval":
+    if settingType == "logginginterval":
         try:
             if value < 1:
                 parent.logging.logEvent("Settings error: Too few minutes given for logging interval", "red")
@@ -540,7 +600,7 @@ def settings(parent, request):
         return "Changed logging interval to " + str(value) + " minutes"
     
     # Interval for generating the 24 h graphs.
-    elif type == "dailyplotinterval":
+    elif settingType == "dailyplotinterval":
         try:
             if value < 1:
                 parent.logging.logEvent("Settings error: Too few minutes given for daily plots interval", "red")
@@ -571,7 +631,7 @@ def settings(parent, request):
         return "Changed daily plots interval to " + str(value) + " minutes"
     
     # Interval for generating the 7 day graphs.
-    elif type == "weeklyplotinterval":
+    elif settingType == "weeklyplotinterval":
         try:
             if value < 1:
                 parent.logging.logEvent("Settings error: Too few minutes given for weekly plots interval", "red")
@@ -602,7 +662,7 @@ def settings(parent, request):
         return "Changed weekly plots interval to " + str(value) + " minutes"
     
     # Interval at which sensorcontrol tasks should be run.
-    elif type == "sensorcontrolinterval":
+    elif settingType == "sensorcontrolinterval":
         try:
             if value < 1:
                 parent.logging.logEvent("Settings error: Too few minutes given for sensorcontrol interval", "red")
@@ -633,7 +693,7 @@ def settings(parent, request):
         return "Changed sensorcontrol interval to " + str(value) + " minutes"
     
     # How many lines from eventlog should be returned to the webUI.
-    elif type == "eventloglength":
+    elif settingType == "eventloglength":
         try:
             if value > 70:
                 parent.logging.logEvent("Settings error: Too many lines given for event log length", "red")
@@ -653,7 +713,7 @@ def settings(parent, request):
         return "Changed eventlog length to " + str(value) + " lines"
     
     # Gracefully shut down the system.
-    elif type == "shutdown":
+    elif settingType == "shutdown":
         parent.quit()
         
 def getIntervals(parent):
@@ -685,4 +745,3 @@ def getFreeMemory(parent, request):
     tmp = parent.connection.send((client, parent.protocol.freeMemory()))
     
     return json.dumps(tmp)
-    

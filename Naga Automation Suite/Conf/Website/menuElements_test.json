@@ -1,0 +1,278 @@
+{
+    "source": {
+        "menu": {
+            "child1": {
+                "value": "Sensors", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "sensorsButton"
+            }, 
+            "child2": {
+                "value": "Devices", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "devicesButton"
+            }, 
+            "child3": {
+                "value": "Tasks", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "tasksButton"
+            }, 
+            "child4": {
+                "value": "Sensorcontrol", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "sensorcontrolButton"
+            }, 
+            "child5": {
+                "value": "Eventlog", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "eventlogButton"
+            }, 
+            "child6": {
+                "value": "Settings", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "settingsButton"
+            }, 
+            "child7": {
+                "value": "Docs", 
+                "element": "input", 
+                "type": "button", 
+                "className": "menubutton", 
+                "id": "documentationButton"
+            }, 
+            "id": "menu", 
+            "element": "div", 
+            "className": "menu", 
+            "childcount": 7
+        }, 
+        "submenu": {
+            "child1": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "child2": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/management", 
+                            "innerHTML": "Management", 
+                            "className": "submenubutton", 
+                            "id": "sensormanagementPage"
+                        }
+                    }, 
+                    "childcount": 2, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/info", 
+                            "innerHTML": "Info", 
+                            "className": "menu submenubutton", 
+                            "id": "sensorPage"
+                        }
+                    }
+                }, 
+                "id": "submenu_sensor", 
+                "className": "submenu"
+            }, 
+            "child2": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "child2": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/management", 
+                            "innerHTML": "Management", 
+                            "className": "submenubutton", 
+                            "id": "devicemanagementPage"
+                        }
+                    }, 
+                    "childcount": 2, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/devices", 
+                            "innerHTML": "Devices", 
+                            "className": "menu submenubutton", 
+                            "id": "devicePage"
+                        }
+                    }
+                }, 
+                "id": "submenu_device", 
+                "className": "submenu"
+            }, 
+            "child3": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "child2": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/management", 
+                            "innerHTML": "Management", 
+                            "className": "submenubutton", 
+                            "id": "taskmanagementPage"
+                        }
+                    }, 
+                    "childcount": 2, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/tasks", 
+                            "innerHTML": "Tasks", 
+                            "className": "menu submenubutton", 
+                            "id": "taskPage"
+                        }
+                    }
+                }, 
+                "id": "submenu_task", 
+                "className": "submenu"
+            }, 
+            "child4": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "child2": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/management", 
+                            "innerHTML": "Management", 
+                            "className": "submenubutton", 
+                            "id": "sensorcontrolmanagementPage"
+                        }
+                    }, 
+                    "childcount": 2, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/sensorcontrol", 
+                            "innerHTML": "Sensorcontrol", 
+                            "className": "menu submenubutton", 
+                            "id": "sensorcontrolPage"
+                        }
+                    }
+                }, 
+                "id": "submenu_sensorcontrol", 
+                "className": "submenu"
+            }, 
+            "childcount": 7, 
+            "child6": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "childcount": 1, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/settings", 
+                            "innerHTML": "Settings", 
+                            "className": "menu submenubutton", 
+                            "id": "settingsPage"
+                        }
+                    }
+                }, 
+                "id": "submenu_settings", 
+                "className": "submenu"
+            }, 
+            "child7": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "childcount": 1, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/docs", 
+                            "innerHTML": "Docs", 
+                            "className": "menu submenubutton", 
+                            "id": "documentationPage"
+                        }
+                    }
+                }, 
+                "id": "submenu_documentation", 
+                "className": "submenu"
+            }, 
+            "child5": {
+                "element": "div", 
+                "style": "display:none;", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "childcount": 1, 
+                    "className": "menu", 
+                    "child1": {
+                        "element": "li", 
+                        "childcount": 1, 
+                        "className": "menu submenubutton", 
+                        "child1": {
+                            "element": "a", 
+                            "href": "/test/eventlog", 
+                            "innerHTML": "Eventlog", 
+                            "className": "menu submenubutton", 
+                            "id": "eventlogPage"
+                        }
+                    }
+                }, 
+                "id": "submenu_eventlog", 
+                "className": "submenu"
+            }
+        }
+    }
+}

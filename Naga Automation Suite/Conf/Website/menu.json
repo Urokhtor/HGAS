@@ -1,0 +1,60 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "element": "body", 
+        "childcount": 4, 
+        "child1": {
+            "condition": "renderheader", 
+            "element": "div", 
+            "id": "header", 
+            "className": "header", 
+            "childcount": 1, 
+            "child1": {
+                "element": "header", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "img",
+                    "src": "../images/test.png",
+                    "width": "1000", 
+                    "height": "144"
+                }
+            }
+        }, 
+        "child2": {
+            "element": "div", 
+            "className": "menubackground", 
+            "childcount": 2, 
+            "child1": {
+                "element": "div", 
+                "id": "menu", 
+                "className": "menu", 
+                "childcount": 1, 
+                "child1": {
+                    "element": "ul", 
+                    "className" : "menu", 
+                    "id": "menuul"
+                }
+            }, 
+            "child2": {
+                "element": "div", 
+                "id": "submenu", 
+                "className": "menubackground"
+            }
+        }, 
+        "child3": {
+            "element": "div", 
+            "id": "body", 
+            "className": "body", 
+            "childcount": 1, 
+            "child1": {
+                "element": "div", 
+                "id": "mainContainer", 
+                "className": "container"
+            }
+        }, 
+        "child4": {
+            "element": "div", 
+            "className": "footer"
+        }
+    }
+}
