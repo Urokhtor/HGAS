@@ -20,33 +20,9 @@ const unsigned long _PUMP_MAX_ON_TIME = 100000; // 140 seconds. Max on time allo
 const unsigned long WATER_LEVEL_MEASUREMENT_INTERVAL = 1000; // One second.
 const int HUMIDITY_TRESHOLD = 400; // The treshold value when pumps need to be shut down.
 
-// Command interface:
-// First byte. Type of operation, read sensor data, control relays or modify sensor/device.
-const char READ = 'r';
-const char WRITE = 'w';
-const char INSERT = 'i'; // Insert a sensor or a pump.
-const char MODIFY = 'm'; // Modify sensor or pump properties.
-const char FORCE_SETUP = 'f'; // Force to take in setup.
-const char SETUP_START = '{'; // Tells that we need to get ready accepting setup parameters or tell setup is already run.
-const char SETUP_END = '}'; // Tells us that setup ready and we can start our normal routines.
+const char MESSAGE_BREAK = '/';
 
-// Third byte. Only with write operation. Enable or disable relay.
-const char ENABLE = 'e';
-const char DISABLE = 'd';
-const char SENSOR = 's'; // Used with INSERT or MODIFY.
-const char PUMP = 'p'; // Used with INSERT or MODIFY.
-
-// Fourth byte. Used with modifying sensors or pumps.
-const char REMOVE = 'r';
-const char HIGH_THRESHOLD = 'h';
-const char LOW_THRESHOLD = 'l';
-const char TYPE = 't';
-const char INDEX = 'i';
-const char MAXONTIME = 'm';
-const char USESHYGROMETER = 'u';
-const char HYGROMETERINDEX = 'g';
-
-const int LIMIT = 255; // Command buffer length.
+const int LIMIT = 512; // Command buffer length.
 
 // The command buffer.
 struct buffer
@@ -55,8 +31,9 @@ struct buffer
 };
 
 static byte MAC[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED}; // This is board specific MAC, user should not be able to change it.
-const char SERVER_IP[] = "192.168.11.33"; // Address of the server we communicate with.
+const char SERVER_IP[] = ""; // Address of the server we communicate with.
 const int SERVER_PORT = 48371; // Which port the receiving server listens.
+const int SERVER_LISTEN_PORT = 48372;
 
 class Manager
 {
@@ -93,10 +70,10 @@ public:
     
     EthernetServer *getServer();
     IPAddress getLocalIP();
-	SensorManager getSensorManager() {return sensorManager;}
-    PumpManager getPumpManager() {return pumpManager;}
-    RelayManager getRelayManager() {return relay;}
-    Timer getTimer() {return timer;}
+	SensorManager *getSensorManager() {return &sensorManager;}
+    PumpManager *getPumpManager() {return &pumpManager;}
+    RelayManager *getRelayManager() {return &relay;}
+    Timer *getTimer() {return &timer;}
 };
 
 #endif

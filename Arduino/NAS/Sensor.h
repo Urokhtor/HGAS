@@ -7,6 +7,9 @@ const int _DEFAULT = 0;
 const int TEMPERATURE = 1;
 const int DHT11 = 2;
 const int SR04 = 3;
+const int BMP085_TEMPERATURE = 4;
+const int BMP085_PRESSURE = 5;
+const int BMP085_ALTITUDE = 6;
 
 const int MAX_DISTANCE = 200;
 
@@ -17,6 +20,7 @@ const int SENSOR_MANAGER_SIZE = 16;
 class Sensor
 {
 protected:
+    int id;
     int index; // Which physical pin does the sensor reside in.
     double lastReading; // The value of last reading we took.
     double highThresholdValue; // What kind of treshold do we want to have with this sensor.
@@ -28,8 +32,13 @@ protected:
     double getDS18B20Reading();
     double getDHT11Reading();
     double getSR04Reading();
+    double getBMP085temperature();
+    double getBMP085pressure();
+    double getBMP085altitude();
     
 public:
+    int getId();
+    void setId(int newId);
     void setIndex(int newIndex);
     int getIndex();
     double getReading();
@@ -59,10 +68,11 @@ private:
 
 public:
     int AddSensor(Sensor &sensor);
-    int AddSensor(int _index, int _type = _DEFAULT, double lowThreshold = 0.0, double highThreshold = 0.0);
-    int RemoveSensor(int _index);
+    int AddSensor(int _id, int _index, int _type = _DEFAULT, double lowThreshold = 0.0, double highThreshold = 0.0);
+    int RemoveSensor(int _id);
     Sensor &getSensor(int _index);
     bool hasIndex(int _index);
+    bool hasId(int _id);
     void setSize(int newSize);
     
     int setIndex(int _index, int newIndex);

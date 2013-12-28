@@ -5,6 +5,17 @@
 #include <DallasTemperature.h>
 #include <dht11.h>
 #include <Ultrasonic.h>
+#include <Wire.h>
+#include <BMP085.h>
+//#include <Adafruit_BMP085.h>
+
+int Sensor::getId() {
+    return id;
+}
+
+void Sensor::setId(int newId) {
+    id = newId;
+}
 
 void Sensor::setIndex(int newIndex)
 {
@@ -35,6 +46,15 @@ double Sensor::getReading()
             break;
         case SR04:
             lastReading = getSR04Reading();
+            break;
+        case BMP085_TEMPERATURE:
+            lastReading = getBMP085temperature();
+            break;
+        case BMP085_PRESSURE:
+            lastReading = getBMP085pressure();
+            break;
+        case BMP085_ALTITUDE:
+            lastReading = getBMP085altitude();
             break;
         default:
             lastReading = analogRead(index);
@@ -92,9 +112,41 @@ double Sensor::getSR04Reading()
     double reading = (double)ultrasonic.convert(ultrasonic.timing(), Ultrasonic::CM);
     return reading;
 }
-/*
-* In case the last made reading is needed, return it.
-*/
+
+double Sensor::getBMP085temperature() {
+    BMP085 dps = BMP085();  
+    Wire.begin();
+    dps.init();
+    long Temperature = 0, Pressure = 0, Altitude = 0;
+    dps.getTemperature(&Temperature); 
+    dps.getPressure(&Pressure);
+    dps.getAltitude(&Altitude);
+    return (double) Temperature;
+}
+
+double Sensor::getBMP085pressure() {
+    Serial.println("At getPressure");
+    BMP085 dps = BMP085();  
+    Wire.begin();
+    dps.init();
+    long Temperature = 0, Pressure = 0, Altitude = 0;
+    dps.getTemperature(&Temperature); 
+    dps.getPressure(&Pressure);
+    dps.getAltitude(&Altitude);
+    Serial.print("The pressure is: ");Serial.println("Pressure");
+    return (double) Pressure;
+}
+
+double Sensor::getBMP085altitude() {
+    BMP085 dps = BMP085();  
+    Wire.begin();
+    dps.init();
+    long Temperature = 0, Pressure = 0, Altitude = 0;
+    dps.getTemperature(&Temperature); 
+    dps.getPressure(&Pressure);
+    dps.getAltitude(&Altitude);
+    return (double) Altitude;
+}
 
 double Sensor::getLastReading()
 {
@@ -152,19 +204,20 @@ unsigned long Sensor::getLastReadingTime()
 
 int SensorManager::AddSensor(Sensor &sensor)
 {
-    if (!hasIndex(sensor.getIndex()))
+    if (!hasId(sensor.getId()))
     {
         container[size] = sensor;
         size++;
     }
 }
 
-int SensorManager::AddSensor(int _index, int _type, double lowThreshold, double highThreshold)
+int SensorManager::AddSensor(int _id, int _index, int _type, double lowThreshold, double highThreshold)
 {
     // Check for possible duplicate index, add sensor to container.
-    if (!hasIndex(_index))
+    if (!hasId(_id))
     {
         Sensor sensor;
+        sensor.setId(_id);
         sensor.setIndex(_index);
         sensor.setType(_type);
         sensor.setLowThresholdValue(lowThreshold);
@@ -180,17 +233,19 @@ int SensorManager::AddSensor(int _index, int _type, double lowThreshold, double 
     return 1;
 }
 
-int SensorManager::RemoveSensor(int _index)
+int SensorManager::RemoveSensor(int _id)
 {
     // Search for index in container, remove the sensor.
-    if (hasIndex(_index))
+    if (hasId(_id))
         for (int i = 0; i < size; i++)
-            if (container[i].getIndex() == _index)
+            if (container[i].getId() == _id) {
                 for (int j = i; j <= size-1; j++)
                     container[j] = container[j+1];
+                //container[size-1] = NULL;
                 size--;
                 return 1;
-    
+            }
+            
     return 0;
 }
 
@@ -207,13 +262,23 @@ Sensor &SensorManager::getSensor(int _index)
             if (container[i].getIndex() == _index) return container[i];
 }
 
+bool SensorManager::hasId(int _id)
+{
+    if (size == 0) return false;
+    
+    for (int i = 0; i < size; i++)
+        if (container[i].getId() == _id) return true;
+    
+    return false;
+}
+
 bool SensorManager::hasIndex(int _index)
 {
     if (size == 0) return false;
-
+    
     for (int i = 0; i < size; i++)
         if (container[i].getIndex() == _index) return true;
-
+    
     return false;
 }
 

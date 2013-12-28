@@ -2,11 +2,36 @@ This folder contains the Arduino code which interfaces with hardware.
 Arduino listens for incoming traffic from the Python server and then
 performs routines according to the message protocol.
 
-This work is at pre-alpha stage. It's not really safe to use yet.
+It is rather stable and safe to use, but not ready yet. However there shouldn't be any
+dangerous bugs left that could break the system.
 
-Note that in order to use this library, certain third party libraries are needed because
-of the sensors: OneWire and DallasTemperature for DS18B20 and DHT11 for the DHT11 humidity/temperature
-sensor. These libraries need to be in their own folders in the Arduino /../sketchbook/library/
+Note that this library needs some third party libraries to work, mainly for reading data from
+different types of sensors. I don't own any copyrights to these libraries and without the
+hard work of the authors Naga Automation Suite wouldn't work. So I want to thank all the
+authors of these third party libraries for their work and their kindness to make their
+libraries open source so projects like NAS can use them.
 
-Also this pre-alpha stage is using MemoryFree for debugging. MemoryFree (found in the Arduino reference)
-needs to be saved in the same folder with all the files included in this library.
+Third party libraries:
+aJson - Copyright (c) 2010, Interactive Matter, Marcus Nowotny
+    - JSON implementation for Arduino.
+    - Used to make the messaging protocol work.
+
+BMP085 - Written by Limor Fried/Ladyada for Adafruit Industries
+    - Library for the BMP085 barometric pressure + temperature sensor.
+
+dallas_temperature_control
+    - Library for the DS18B20 temperature sensor.
+    - Requires the OneWire library to work.
+
+OneWire -
+    - Library that allows Arduino to interface with OneWire protocol sensors like the DS18B20.
+
+DHT11 - by George Hadjikyriacou
+    - Library for the DHT11 humidity and temperature sensor.
+
+HCSR04Ultrasonic - by Carl Nobile
+    - Library for the HC-SR04 Ultrasonic sensor
+
+MemoryFree
+    - Tells the user how many free kilobytes of memory are left.
+    - Used for debugging.

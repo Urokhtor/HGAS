@@ -36,10 +36,18 @@ int RelayManager::controlRelays(int command)
     return 0;
 }
 
-boolean RelayManager::getState(int index)
+int RelayManager::getState(int index)
 {
     for (int i = 0; i < MAX_RELAY_SIZE; i++)
-        if (relays.relayPins[i] == index) return relays.relayStates[i];
+    {
+        if (relays.relayPins[i] == index)
+        {
+            if (relays.relayStates[i] == HIGH) return 1;
+            else return 0;
+        }
+    }
+    
+    return -1;
 }
 
 boolean RelayManager::hasIndex(int _index)
@@ -86,7 +94,7 @@ int RelayManager::switchOneRelay(int index)
     for (int i = 0; i < MAX_RELAY_SIZE; i++)
     {
         if (relays.relayPins[i] == index)
-        {
+        {            
             if (relays.relayStates[i] == LOW)
             {
                 digitalWrite(relays.relayPins[i], LOW);
@@ -103,12 +111,23 @@ int RelayManager::switchOneRelay(int index)
         }
     }
     
+    // Didn't find the relay.
     return -1;
 }
 
 Pump::Pump(): isRunning(false)
 {
 
+}
+
+void Pump::setId(int newId)
+{
+    id = newId;
+}
+
+int Pump::getId()
+{
+    return id;
 }
 
 void Pump::setIndex(int newIndex)
@@ -180,11 +199,12 @@ int PumpManager::AddPump(Pump &pump)
     }
 }
 
-int PumpManager::AddPump(int _index, unsigned long maxOnTime, boolean usesHygrometer, int hygrometerIndex)
+int PumpManager::AddPump(int _id, int _index, unsigned long maxOnTime, boolean usesHygrometer, int hygrometerIndex)
 {
-    if (!hasIndex(_index))
+    if (!hasId(_id))
     {
         Pump pump;
+        pump.setId(_id);
         pump.setIndex(_index);
         pump.setMaxOnTime(maxOnTime);
         pump.setIsRunning(false);
@@ -195,17 +215,19 @@ int PumpManager::AddPump(int _index, unsigned long maxOnTime, boolean usesHygrom
     }
 }
 
-int PumpManager::RemovePump(int _index)
+int PumpManager::RemovePump(int _id)
 {
     // Search for index in container, remove the pump.
-    if (hasIndex(_index))
+    if (hasId(_id))
         for (int i = 0; i < size; i++)
-            if (container[i].getIndex() == _index)
+            if (container[i].getId() == _id) {
                 for (int j = i; j <= size-1; j++)
                     container[j] = container[j+1];
+                //container[size-1] = NULL;
                 size--;
                 return 1;
-    
+            }
+            
     return 0;
 }
 
@@ -221,6 +243,16 @@ void PumpManager::getIndexList(int arr[PUMP_MANAGER_SIZE])
     
     for (int i = 0; i < PUMP_MANAGER_SIZE; i++)
         arr[i] = container[i].getIndex();
+}
+
+bool PumpManager::hasId(int _id)
+{
+    if (size == 0) return false;
+
+    for (int i = 0; i < size; i++)
+        if (container[i].getId() == _id) return true;
+
+    return false;
 }
 
 bool PumpManager::hasIndex(int _index)

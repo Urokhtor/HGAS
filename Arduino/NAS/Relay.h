@@ -32,7 +32,7 @@ public:
     void Initialize(int relayStartIndex);
     int controlRelays(int command);
     int switchOneRelay(int index);
-    boolean getState(int index);
+    int getState(int index);
     boolean hasIndex(int _index);
 };
 
@@ -46,6 +46,7 @@ public:
 class Pump
 {
 private:
+    int id;
     int index;
     unsigned long startTime;
     unsigned long maxOnTime;
@@ -55,6 +56,8 @@ private:
 
 public:
     Pump();
+    void setId(int newId);
+    int getId();
     void setIndex(int newIndex);
     int getIndex();
     void setStartTime(unsigned long newStartTime);
@@ -81,10 +84,11 @@ private:
 
 public:
     int AddPump(Pump &pump);
-    int AddPump(int _index, unsigned long maxOnTime = PUMP_MAX_ON_TIME, boolean usesHygrometer = false, int hygrometerIndex = -1);
-    int RemovePump(int _index);
+    int AddPump(int _id, int _index, unsigned long maxOnTime = PUMP_MAX_ON_TIME, boolean usesHygrometer = false, int hygrometerIndex = -1);
+    int RemovePump(int _id);
     Pump &getPump(int _index);
     void getIndexList(int arr[PUMP_MANAGER_SIZE]);
+    bool hasId(int _id);
     bool hasIndex(int _index);
     void setSize(int newSize);
     
