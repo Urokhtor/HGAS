@@ -12,14 +12,16 @@ class SensorViewController(ViewController):
         
         """
         
-        f = open("Conf/Website/sensorview_test.json", "r")
+        f = open("Conf/Website/sensorview.json", "r")
         tmp = json.load(f)
         f.close()
-        
+
         sensorUL = JFET.findElementById(tmp["source"], "sensorUL")
         
         sensors = parent.deviceManager.getSensors()
-        
+
+        if sensors is None: return json.dumps(tmp)
+
         for sensor in sensors:
             childLi = JFET.addChild(sensorUL, "li")
             childDiv = JFET.addChild(childLi, "div")

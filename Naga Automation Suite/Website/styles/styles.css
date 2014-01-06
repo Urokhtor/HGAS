@@ -304,8 +304,8 @@ input.chosensubmenubutton {
     font-weight: bold;
 }
 
-a.submenubutton {
-    /* background-color: #D8D8D8; */
+/*.submenubutton {
+    //background-color: #D8D8D8;
     background-color: #C8D996;
     border-style: none;
     margin: 0px auto;
@@ -314,23 +314,23 @@ a.submenubutton {
     font-weight: bold;
 }
 
-a.submenubutton:hover {
-    /* background-color: #848484; */
+.submenubutton:hover {
+    //background-color: #848484;
     background-color: #A7C942;
     height: 35px;
     width: 100px;
     font-weight: bold;
 }
 
-a.chosensubmenubutton {
-    /* background-color: #848484; */
+.chosensubmenubutton {
+    //background-color: #848484;
     background-color: #A7C942;
     border-style: none;
     margin: 0px auto;
     height: 35px;
     width: 100px;
     font-weight: bold;
-}
+}*/
 
 ul.leftcolumnul {
     background-color: transparent;

@@ -80,8 +80,9 @@ class Configuration:
             Returns all the data in the configuration file.
         """
         
-        return self.data.items()
-        
+        #return self.data.items()
+        return self.data
+
     def verify(self):
         noChanges = True
         

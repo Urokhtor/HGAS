@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/home/urokhtor/Documents/Garden automation/Naga Automation System")
+sys.path.append("G:\\Programming\Python\\Naga-Automation-Suite\\Naga Automation Suite")
 
 from Tools.JSONFrontEndTool import JSONFrontEndTool as JFET
 import json
@@ -25,30 +25,30 @@ for i in range(0, 7):
     childLi = JFET.addChild(childUl, "li")
     JFET.addParameter(childLi, "className", "menu")
     
-    #childInput = JFET.addChild(childLi, "input")
-    childInput = JFET.addChild(childLi, "a")
-    #JFET.addParameter(childInput, "type", "button")
-    #JFET.addParameter(childInput, "className", "menu submenubutton")
-    JFET.addParameter(childInput, "id", section[i] + "Page")
-    #JFET.addParameter(childInput, "value", value[i])
-    JFET.addParameter(childInput, "innerHTML", value[i])
+    childInput = JFET.addChild(childLi, "input")
+    #childInput = JFET.addChild(childLi, "a")
+    JFET.addParameter(childInput, "type", "button")
+    JFET.addParameter(childInput, "className", "menu submenubutton")
+    JFET.addParameter(childInput, "id", section[i] + "Selectbutton")
+    JFET.addParameter(childInput, "value", value[i])
+    #JFET.addParameter(childInput, "innerHTML", value[i])
     #JFET.addParameter(childInput, "className", "submenubutton")
-    JFET.addParameter(childInput, "href", "/test/" + value[i].lower())
+    #JFET.addParameter(childInput, "href", "/test/" + value[i].lower())
     
     # Generate management page for first four tabs.
     if i <= 3:
         childLi = JFET.addChild(childUl, "li")
         JFET.addParameter(childLi, "className", "menu")
     
-        #childInput = JFET.addChild(childLi, "input")
-        childInput = JFET.addChild(childLi, "a")
-        #JFET.addParameter(childInput, "type", "button")
-       # JFET.addParameter(childInput, "className", "submenubutton")
-        JFET.addParameter(childInput, "id", section[i] + "managementPage")
-        #JFET.addParameter(childInput, "value", "Management")
-        JFET.addParameter(childInput, "innerHTML", "Management")
+        childInput = JFET.addChild(childLi, "input")
+        #childInput = JFET.addChild(childLi, "a")
+        JFET.addParameter(childInput, "type", "button")
+        JFET.addParameter(childInput, "className", "submenubutton")
+        JFET.addParameter(childInput, "id", section[i] + "managementSelectbutton")
+        JFET.addParameter(childInput, "value", "Management")
+        #JFET.addParameter(childInput, "innerHTML", "Management")
         #JFET.addParameter(childInput, "className", "submenubutton")
-        JFET.addParameter(childInput, "href", "/test/management")
+        #JFET.addParameter(childInput, "href", "/test/management")
 
 tmp["source"]["submenu"] = submenu
 

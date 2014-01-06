@@ -1,0 +1,16 @@
+{
+    "arduinolistenport": 48372, 
+    "debug": true, 
+    "sensorcontrolinterval": 120, 
+    "eventloglength": 40, 
+    "dailyplotinterval": 120, 
+    "localip": "", 
+    "arduinoport": 48371, 
+    "logginginterval": 120, 
+    "generateplots": true, 
+    "idsequence": 1027,
+    "verbose": true, 
+    "weeklyplotinterval": 120, 
+    "listenport": 8082, 
+    "devmode": true
+}

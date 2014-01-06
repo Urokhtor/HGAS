@@ -30,7 +30,7 @@ from Managers.SettingsManager import SettingsManager
 from Managers.ClientManager import ClientManager
 from HTTPServer import WebServer
 from Startup import Startup
-from Plot import Plot
+#from Plot import Plot
 from Constants import *
 
 from time import sleep
@@ -51,6 +51,7 @@ class Core:
         self.configManager.loadConf(CONFIG_CORE)
         self.configManager.loadConf(CONFIG_SETTINGS)
         self.configManager.loadConf(CONFIG_FORMS)
+        self.configManager.loadConf(CONFIG_URLMAP)
         
         self.moduleManager = ModuleManager(self)
         self.clientManager = ClientManager(self)
@@ -58,7 +59,7 @@ class Core:
         self.taskManager = TaskManager(self)
         self.settingsManager = SettingsManager(self)
         self.logging = Logging(self)
-        self.plot = Plot(self)
+        #self.plot = Plot(self)
         self.protocol = Protocol()
         if not justPlots: self.connection = Connection(self)
         if not justPlots: self.scheduler = Scheduler()
@@ -72,8 +73,8 @@ class Core:
         startup.addDevices()
         startup.addTasks()
         startup.addSensorLogging()
-        startup.addDailyPlots()
-        startup.addWeeklyPlots()
+        #startup.addDailyPlots()
+        #startup.addWeeklyPlots()
         startup.addSensorControl()
 
         #modules = []

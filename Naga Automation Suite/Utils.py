@@ -24,33 +24,47 @@ from Constants import *
 
 from time import time
 from os import path
+import traceback
 
 def dispatchRequest(parent, request):
-    if not "type" in request or not "name" in request:
+    if not "name" in request:
         return "" # Return some error.
 
     parent.logging.logDebug("Serving request: " + json.dumps(request))
+    module = None
 
     # Reload the module if needed and then load it for execution.
     try:
         # For debugging purposes reload changes made to the controller. Later on
         # make the front end support reloading modules.
-        reloadIfNeeded(parent, request["name"])
-        tmp = time()
-        module = parent.moduleManager.getModule("Controllers." + request["name"])
-        parent.logging.logDebug("Getting module " + "Controllers." + request["name"] + " took: " + str(time()-tmp))
+        urlMap = parent.configManager.getConf(CONFIG_URLMAP).items()
+
+        if request["name"] in urlMap:
+            moduleName = urlMap[request["name"]]
+
+            if moduleName.find("View") != -1: request["type"] = TYPE_VIEW
+            elif moduleName.find("Form") != -1: request["type"] = TYPE_FORM
+
+            reloadIfNeeded(parent, moduleName)
+            tmp = time()
+            module = parent.moduleManager.getModule("Controllers." + moduleName)
+            parent.logging.logDebug("Getting module " + "Controllers." + request["name"] + " took: " + str(time()-tmp))
 
     except Exception as e:
         parent.logging.logDebug("Add error logging here in the dispatchRequest")
         parent.logging.logDebug(str(e))
+        traceback.print_exc()
         return '{"' + KEY_ERROR + '": "An error occurred: ' + str(e) + '"}'
 
     if request["type"] == TYPE_FORM:
         try:
             reject = {}
             response = {}
-            
+
             if not module is None:
+                if request["action"] == PAGE_FETCH:
+                    return module.handleRequest(parent, request, response)
+
                 #module.fetchResource()
                 # Validate the form data and do type conversions.
                 module.validate(parent, request, reject)
@@ -68,6 +82,7 @@ def dispatchRequest(parent, request):
         except Exception as e:
             parent.logging.logDebug("Add error logging here in the dispatchRequest")
             parent.logging.logDebug(str(e))
+            traceback.print_exc()
             return '{"' + KEY_ERROR + '": "An error occurred: ' + str(e) + '"}'
     
     elif request["type"] == TYPE_VIEW:
@@ -88,6 +103,7 @@ def dispatchRequest(parent, request):
         except Exception as e:
             parent.logging.logDebug("Add error logging here in the dispatchRequest")
             parent.logging.logDebug(str(e))
+            traceback.print_exc()
             return '{"' + KEY_ERROR + '": "An error occurred: ' + str(e) + '"}'
     
     elif request["type"] == TYPE_GET:
@@ -95,7 +111,7 @@ def dispatchRequest(parent, request):
         # I don't know if it's really needed. TYPE_VIEW should be able to handle it all.
         print("Derp")
         
-    return ""
+    return '{"' + KEY_ERROR + '": "Could not load page"}'
 
 def reloadIfNeeded(parent, name):
     tmp = time()

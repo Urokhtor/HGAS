@@ -4,6 +4,7 @@
  */
  
 var PAGE_FETCH = 403;
+var PRESERVE_COOKIE = 5; // For how many days to store the cookie.
 
 /*
  * Utility functions
@@ -48,7 +49,6 @@ function addParameter(element, parameter, source) {
 function recursiveGenerator(element, object) {
     for (var i = 1; i <= object["childcount"]; i++) {
         var child = object["child"+i];
-        //console.log(child);
         
         var newElem =  document.createElement(child["element"]);
         addParameter(newElem, "id", child);
@@ -67,29 +67,24 @@ function recursiveGenerator(element, object) {
         addParameter(newElem, "href", child);
         
         element.appendChild(newElem);
-        //console.log(element.innerHTML);
         
         if (object["childcount"]) recursiveGenerator(newElem, child);
-    
     }
 }
+
+String.prototype.startsWith = function(prefix) {
+    return this.indexOf(prefix) == 0;
+};
+
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
 
 /* ==================== End of utility functions ==================== */
 
 function setMenu(menu, activeButton) {
-    var submenu = document.getElementById("submenu");
-    var submenuArr = submenu.getElementsByClassName("submenu");
-    
-    for (var i = 0; i < submenuArr.length; i++) {
-        if (submenuArr[i].id == menu.id) {
-            submenuArr[i].style.display = "block";
-            createCookie("currentsubmenu", menu.id + " " + activeButton.id, 5);
-        }
-        
-        else if (submenuArr[i].style.display != "none")
-            submenuArr[i].style.display = "none";
-    }
-    
+    createCookie("currentmenu", menu.id + " " + activeButton.id, PRESERVE_COOKIE);
+
     var menuDiv = document.getElementById("menu");
     var inputArr = menuDiv.getElementsByTagName("input");
     
@@ -105,57 +100,32 @@ function setMenu(menu, activeButton) {
     
     if (page != null) {
         page = page.split(" ");
-        setSubMenu(document.getElementById(page[0]), document.getElementById(page[1]), document.getElementById(page[2]));
+        setSubMenu(document.getElementById(page[0]), document.getElementById(page[1]));
     }
     
     else {
         var prefix = menu.id.split("_")[1];
-        setSubMenu(document.getElementById(menu.id), document.getElementById(prefix + "Page"));
+        setSubMenu(menu, document.getElementById(prefix + "Selectbutton"));
     }
 }
 
-function setSubMenu(menu, activeButton, container) {
-    //var body = document.getElementById("body");
-    //var containerArr = body.getElementsByClassName("container");
-    //var mainContainer = document.getElementById("mainContainer");
+function setSubMenu(menu, activeButton) {
+    console.log(menu);
+    console.log(activeButton);
     
-    //console.log(menu);
-    //console.log(activeButton);
-    //console.log(container);
-    data = {};
-    data["type"] = "view";
-    data["name"] = "SensorViewController";
-    data["action"] = PAGE_FETCH;
+    var container = document.getElementById("submenu");
+    var children = container.getElementsByTagName("div");
     
-    postHTTPRequest(JSON.stringify(data), generatePage);
-    
-    /*for (var i = 0; i < containerArr.length; i++) {
-        if (containerArr[i].id == container.id) {
-            reloadPage(container.id.split("Container")[0]);
-            
-            if (containerArr[i].id.indexOf("management") != -1) {
-                var originalString = containerArr[i].id.split("management")[0];
-                var tmp = originalString.charAt(0).toUpperCase() + originalString.substring(1);
-                document.getElementById(originalString + "Id").value = "";
-                document.getElementById("add" + tmp).disabled = false;
-                
-                //var form = containerArr[i].id.split("Container")[0] + "Form";
-                //var elem = document.getElementById(form);
-                
-                /*for (var j = 0; j < elem.elements.length; j++) {
-                    //console.log(elem.elements[i].id);
-                    //elem.elements[i].value = undefined;
-                }*/
-        /*    }
-            
-            containerArr[i].style.display = "block";
-            createCookie(menu.id, menu.id + " " + activeButton.id + " " + container.id, 5);
+    for (var i = 0; i < children.length; i++) {
+        if (activeButton.id.startsWith(children[i].id.split("_")[1])) {
+            children[i].style.display = "block";
+            createCookie(menu.id, menu.id + " " + activeButton.id, PRESERVE_COOKIE);
         }
         
-        else if (containerArr[i].style.display != "none")
-            containerArr[i].style.display = "none";
+        else
+            children[i].style.display = "none";
     }
-    */
+
     var inputArr = menu.getElementsByTagName("input");
     
     for (var i = 0; i < inputArr.length; i++) {
@@ -165,6 +135,12 @@ function setSubMenu(menu, activeButton, container) {
         else if (inputArr[i].className != "submenubutton")
             inputArr[i].className = "submenubutton";
     }
+    
+    data = {};
+    data["name"] = activeButton.id
+    data["action"] = PAGE_FETCH;
+    
+    postHTTPRequest(JSON.stringify(data), generatePage);
 }
 
 function setPage(_response) {
@@ -180,12 +156,10 @@ function setPage(_response) {
 function getPage() {
     // First get the menu body and generate it, then check which page to load
     // and finally load the page and generate it.
-    
     var data = {};
-    data["type"] = "view";
     data["name"] = "NASMenuViewController";
     data["action"] = PAGE_FETCH;
-    //console.log(data);
+    
     postHTTPRequest(JSON.stringify(data), generateMenu);
 }
 
@@ -206,28 +180,31 @@ function generateMenu(_response) {
     var end = new Date().getMilliseconds();
     console.log("Generating menu took " + (end-start) + " ms");
     
-    var submenu = readCookie("currentsubmenu");
+    var menu = readCookie("currentmenu");
     
-    if (submenu == null) {
-        setMenu(document.getElementById("submenu_sensor"), document.getElementById("sensorsButton"));
-        submenu = readCookie("currentsubmenu");
-        submenu = submenu.split(" ");
+    if (menu == null) {
+        console.log("menu == null");
+        setMenu(document.getElementById("submenu_sensor"), document.getElementById("sensorButton"));
     }
     
     else {
-        submenu = submenu.split(" ");
-        setMenu(document.getElementById(submenu[0]), document.getElementById(submenu[1]));
+        console.log("menu != null");
+        menuArr = menu.split(" ");
+        var menuButton = readCookie(menuArr[1]);
+        var sourceElement;
+
+        if (!menu) {
+            console.log("!menu");
+            sourceElement = "sensorButton";
+        }
+        
+        else {
+            console.log("menu");
+            sourceElement = menuArr[1];
+        }
+        
+        setMenu(document.getElementById(menuArr[0]), document.getElementById(sourceElement));
     }
-    
-    /*var page = readCookie(submenu[0]);
-    
-    if (page == null)
-        setSubMenu(document.getElementById("submenu_sensor"), document.getElementById("sensorPage"), document.getElementById("sensorForm"));
-    
-    else {
-        page = page.split(" ");
-        setSubMenu(document.getElementById(page[0]), document.getElementById(page[1]), document.getElementById(page[2]));
-    }*/
     
     var end2 = new Date().getMilliseconds();
     console.log("Total time spent in generateMenu(): " + (end2-start) + " ms");
@@ -237,15 +214,17 @@ function generatePage(_response) {
     var tmp = _response.replace(/\\"/g, "'").replace(/"/g, "").replace(/'/g, "\"");
     response = JSON.parse(tmp);
     
-    var mainContainer = jQuery("mainContainer");
-    mainContainer.html("");
+    var mainContainer = document.getElementById("mainContainer");//jQuery("mainContainer");
+    console.log(mainContainer);
+    mainContainer.innerHTML = "";//mainContainer.html("");
+    console.log(mainContainer);
     
     if (!response["renderbrowser"]) {
-        mainContainer.html(JSON.stringify(response["source"]));
+        mainContainer.innerHTML = JSON.stringify(response["source"]);//mainContainer.html(JSON.stringify(response["source"]));
         return;
     }
-    
-    var container = response["source"];
+    console.log(response["source"]);
+    var container = response["source"]["child1"];
     var element = document.getElementById("mainContainer");
     element.innerHTML = "";
     var start = new Date().getMilliseconds();
@@ -253,10 +232,6 @@ function generatePage(_response) {
     var end = new Date().getMilliseconds();
     console.log("Page generation took " + (end-start) + " ms");
 }
-
-/*window.onclick = function(event) {
-    console.log(event);
-}*/
 
 // Adds a function that needs to be executed on page load.
 function addLoadEvent(func) {
@@ -279,21 +254,48 @@ function addLoadEvent(func) {
 addLoadEvent(getPage);
 
 window.onclick = function(e){
-  e = e || window.event;
-  var from = findParent('a',e.target || e.srcElement);
-  if (from){
-     /* it's a link, actions here */
-     console.log(from);
-     console.log(e);
-     e.preventDefault();
+    /* 
+        We want to sniff button clicks here and distinguish between menu buttons and things like selecting
+        sensors.
+    */
+  
+    var id = e.srcElement.id;
+    
+    if (id.endsWith("Button")) {
+        var submenuId = id.split("Button")[0];
+        var submenu = document.getElementById("submenu_" + submenuId);
+        setMenu(submenu, e.srcElement);
+    }
+    
+    else if (id.endsWith("Selectbutton")) {
+        var container = document.getElementById("submenu");
+        var children = container.getElementsByTagName("div");
+        console.log("ID: " + id);
+        for (var i = 0; i < children.length; i++) {
+            console.log(children[i]);
+            if (id.startsWith(children[i].id.split("_")[1])) {
+                console.log("true");
+                setSubMenu(children[i], e.srcElement);
+                break;
+            }
+        }
+    }
+  
+    e = e || window.event;
+    var from = findParent('a',e.target || e.srcElement);
+    if (from) {
+        /* it's a link, actions here */
+        console.log(from);
+        console.log(e);
+        e.preventDefault();
 
-    var data = {};
-    data["type"] = "view";
-    data["name"] = "HerpViewController";
-    data["action"] = PAGE_FETCH;
+        var data = {};
+        data["type"] = "view";
+        data["name"] = "HerpViewController";
+        data["action"] = PAGE_FETCH;
 
-     postHTTPRequest(JSON.stringify(data), durp);
-  }
+        postHTTPRequest(JSON.stringify(data), durp);
+    }
 }
 
 function durp(response) {

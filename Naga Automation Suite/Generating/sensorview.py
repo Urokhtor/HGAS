@@ -1,16 +1,28 @@
 import sys
-sys.path.append("/home/urokhtor/Documents/Garden automation/Naga Automation System")
+sys.path.append("G:\\Programming\Python\\Naga-Automation-Suite\\Naga Automation Suite")
 
 from Tools.JSONFrontEndTool import JSONFrontEndTool as JFET
+from Tools.FrontEndElementTool import FrontEndElementTool as FEET
 import json
 
-f = open("Conf/Website/sensorview.json", "r")
-tmp = json.load(f)
-f.close()
+try:
+    f = open("Conf/Website/sensorview.json", "r")
+    tmp = json.load(f)
+    f.close()
 
-mainContainer = JFET.findElementById(tmp["source"], "mainContainer")
+except:
+    tmp = FEET.createSource()
+
+tmp["source"] = {}
+mainContainer = FEET.createMainContainer(tmp["source"])
+
 tableMapping = ["Name", "Type", "Client", "Index", "Last reading", "Last update"]
 
+childDiv = FEET.createLeftButtonColumn(mainContainer)
+childDivRight = FEET.createRightDivContainer(mainContainer)
+childDivViewTable = FEET.createViewTable(childDivRight)
+
+"""
 # Left part.
 childDiv = JFET.addChild(mainContainer, "div")
 JFET.addParameter(childDiv, "id", "leftSensorColumn")
@@ -24,6 +36,7 @@ JFET.addParameter(childH3, "innerHTML", "Select sensor:")
 childUl = JFET.addChild(childDiv, "ul")
 JFET.addParameter(childUl, "id", "sensorUL")
 JFET.addParameter(childUl, "className", "leftcolumnul")
+
 
 # Right part.
 childDivRight = JFET.addChild(mainContainer, "div")
@@ -46,7 +59,10 @@ JFET.addParameter(childTh, "innerHTML", "Sensor info:")
 # Actual table.
 childTableViewTable2 = JFET.addChild(childDivViewTable, "table")
 JFET.addParameter(childTableViewTable2, "className", "fullWidth")
-childTbody = JFET.addChild(childTableViewTable2, "tbody")
+"""
+
+childTbody = JFET.findElementById(childDivViewTable, "tableRows")
+
 
 j = 0
 for i in range(0, 3):
@@ -98,6 +114,6 @@ childTableViewTable4 = JFET.addChild(childDivRight, "table")
 childDivPlots = JFET.addChild(childTableViewTable4, "div")
 JFET.addParameter(childDivPlots, "id", "sensorPlotsHolder")
 
-f = open("Conf/Website/sensorview_test.json", "w")
+f = open("Conf/Website/sensorview.json", "w")
 json.dump(tmp, f, indent = 4)
 f.close()

@@ -1,41 +1,41 @@
 {
-    "old_lastmodify": {
-        "Controllers.SensorViewController": 1380456008.5612805,
-        "Controllers.SensorcontrolFormController": 0,
-        "Controllers.TaskFormController": 0,
-        "Controllers.SensorFormController": 0,
-        "Controllers.NASMenuViewController": 1380735540.4348729
-    },
-    "old_modules": [
-        "Controllers.SensorFormController",
-        "Controllers.TaskFormController",
-        "Controllers.SensorcontrolFormController",
-        "Controllers.NASMenuViewController",
-        "Controllers.SensorViewController"
-    ],
     "pagemap": {
         "sensorPage": "SensorViewController"
-    },
+    }, 
     "modules": [
         {
-            "module": "Controllers.SensorFormController",
-            "lastmodify": 0
-        },
+            "module": "Controllers.SensorManagementFormController", 
+            "lastmodify": 1389003456.5739832
+        }, 
         {
-            "module": "Controllers.TaskFormController",
+            "module": "Controllers.TaskFormController", 
             "lastmodify": 0
-        },
+        }, 
         {
-            "module": "Controllers.SensorcontrolFormController",
+            "module": "Controllers.SensorcontrolFormController", 
             "lastmodify": 0
-        },
+        }, 
         {
-            "module": "Controllers.NASMenuViewController",
+            "module": "Controllers.NASMenuViewController", 
             "lastmodify": 1380735540.4348729
-        },
+        }, 
         {
-            "module": "Controllers.SensorViewController",
-            "lastmodify": 1380456008.5612805
+            "module": "Controllers.SensorViewController", 
+            "lastmodify": 1389002066.0254483
         }
-    ]
+    ], 
+    "old_modules": [
+        "Controllers.SensorFormController", 
+        "Controllers.TaskFormController", 
+        "Controllers.SensorcontrolFormController", 
+        "Controllers.NASMenuViewController", 
+        "Controllers.SensorViewController"
+    ], 
+    "old_lastmodify": {
+        "Controllers.SensorcontrolFormController": 0, 
+        "Controllers.SensorFormController": 0, 
+        "Controllers.SensorViewController": 1380456008.5612805, 
+        "Controllers.TaskFormController": 0, 
+        "Controllers.NASMenuViewController": 1380735540.4348729
+    }
 }
