@@ -71,8 +71,8 @@ class Core:
         
         startup = Startup(self)
         startup.addDevices()
-        startup.addTasks()
-        startup.addSensorLogging()
+        #startup.addTasks()
+        #startup.addSensorLogging()
         #startup.addDailyPlots()
         #startup.addWeeklyPlots()
         startup.addSensorControl()
@@ -108,14 +108,21 @@ def main():
     print("")
     
     if len(sys.argv) == 1:
-        server = Core()
-        server.initialize()
+        try:
+            server = Core()
+            server.initialize()
         
-        while 1:
-            tmp = input("")
-            print("You gave: " + tmp)
-            sleep(0.1)
-    
+            while 1:
+                tmp = input("")
+                print("You gave: " + tmp)
+                sleep(0.1)
+
+        except KeyboardInterrupt as e:
+            from os import _exit
+            _exit(0)
+
+        #except Exception as e:
+
     # Adds an encrypted user and password pair.
     elif sys.argv[1] == "user":
         if len(sys.argv) != 4:

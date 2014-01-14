@@ -1,0 +1,11 @@
+{
+    "source": {
+        "childcount": 1, 
+        "child1": {
+            "className": "container", 
+            "element": "div", 
+            "id": "mainContainer"
+        }
+    }, 
+    "renderbrowser": true
+}

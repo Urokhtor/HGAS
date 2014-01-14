@@ -66,13 +66,13 @@ class Startup:
                 
                 if device:
                     if task["action"] == SEND_ENABLE:
-                        action = (device["clientname"], self.parent.protocol.writeEnable(device["id"], device["index"]))
+                        action = (device["clientid"], self.parent.protocol.writeEnable(device["id"], device["index"]))
                         
                     elif task["action"] == SEND_ENABLE:
-                        action = (device["clientname"], self.parent.protocol.writeDisable(device["id"], device["index"]))
+                        action = (device["clientid"], self.parent.protocol.writeDisable(device["id"], device["index"]))
                     
                     elif task["action"] == SEND_WRITE:
-                        action = (device["clientname"], self.parent.protocol.write(device["id"], device["index"]))
+                        action = (device["clientid"], self.parent.protocol.write(device["id"], device["index"]))
                     
                     newTask = Task(task["name"], "write", action, device["index"], 1, self.parent.connection.send)
                 

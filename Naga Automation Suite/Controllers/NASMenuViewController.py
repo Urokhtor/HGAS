@@ -33,6 +33,6 @@ class NASMenuViewController(ViewController):
         for i in range(1, submenuelements["childcount"]+1):
             child = submenuelements["child"+str(i)]
             JFET.addChildObject(submenu, child)
-            
+
         return json.dumps(tmp)
         

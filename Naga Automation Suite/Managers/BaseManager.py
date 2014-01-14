@@ -42,6 +42,21 @@ class BaseManager:
 
         return None
 
+    def _getAllFromField(self, _item, field):
+        """
+            Gets all values from given field.
+        """
+
+        items = self.parent.configManager.getConf(CONFIG_CORE).getItem(_item, None)
+        list = []
+
+        if not field is None:
+            for item in items:
+                if field in item:
+                    list.append(item[field])
+
+        return list
+
     def _has(self, _item, id):
         """
 

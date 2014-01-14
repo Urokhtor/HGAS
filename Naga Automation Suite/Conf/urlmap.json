@@ -1,5 +1,9 @@
 {
     "NASMenuViewController": "NASMenuViewController", 
     "sensorSelectbutton": "SensorViewController",
-    "sensormanagementSelectbutton": "SensorManagementFormController" 
+    "sensormanagementSelectbutton": "SensorManagementFormController", 
+    "deviceSelectbutton": "DeviceViewController", 
+    "devicemanagementSelectbutton": "DeviceManagementFormController", 
+    "sensorcontrolSelectbutton": "SensorcontrolViewController", 
+    "sensorcontrolmanagementSelectbutton": "SensorcontrolFormController"
 }

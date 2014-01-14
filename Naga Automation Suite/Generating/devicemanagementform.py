@@ -13,17 +13,17 @@ tableMapping = ["Name", "Type", "Client", "Index"]
 inputMapping = [{"element": "input", "type": "text"}, {"element": "select"}, {"element": "select"}, {"element": "input", "type": "text"}]
 
 mainContainer = FEET.createMainContainer(tmp["source"])
-form = FEET.createForm(mainContainer, "sensormanagementForm")
-viewTable = FEET.createViewTable(form, "Sensor management:")
+form = FEET.createForm(mainContainer, "devicemanagementForm")
+viewTable = FEET.createViewTable(form, "Device management:")
 childTbody = JFET.findElementById(viewTable, "tableRows")
-hiddenInput = FEET.createHiddenInput(childTbody, "sensorId", "sensorId")
+hiddenInput = FEET.createHiddenInput(childTbody, "deviceId", "deviceId")
 
-FEET.fillViewTable(childTbody, "sensor", tableMapping, inputMapping)
+FEET.fillViewTable(childTbody, "device", tableMapping, inputMapping)
 
 buttonRow = JFET.findElementById(viewTable, "buttonRow")
 buttons = ["Save", "Remove"]
 FEET.createButtonRowButtons(buttonRow, buttons)
 
-f = open("Conf/Website/sensormanagementform.json", "w+")
+f = open("Conf/Website/devicemanagementform.json", "w+")
 json.dump(tmp, f, indent = 4)
 f.close()

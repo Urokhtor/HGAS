@@ -1,41 +1,36 @@
 {
-    "pagemap": {
-        "sensorPage": "SensorViewController"
-    }, 
     "modules": [
         {
             "module": "Controllers.SensorManagementFormController", 
-            "lastmodify": 1389003456.5739832
+            "lastmodify": 1389719918.8066485
         }, 
         {
             "module": "Controllers.TaskFormController", 
             "lastmodify": 0
         }, 
         {
-            "module": "Controllers.SensorcontrolFormController", 
+            "module": "Controllers.SensorcontrolViewController", 
+            "lastmodify": 0
+        }, 
+        {
+            "module": "Controllers.SensorcontrolManagementFormController", 
             "lastmodify": 0
         }, 
         {
             "module": "Controllers.NASMenuViewController", 
-            "lastmodify": 1380735540.4348729
+            "lastmodify": 1389468785.6030998
         }, 
         {
             "module": "Controllers.SensorViewController", 
-            "lastmodify": 1389002066.0254483
+            "lastmodify": 1389720235.4197576
+        }, 
+        {
+            "module": "Controllers.DeviceManagementFormController", 
+            "lastmodify": 1389722008.7011836
+        }, 
+        {
+            "module": "Controllers.DeviceViewController", 
+            "lastmodify": 1389722036.6527822
         }
-    ], 
-    "old_modules": [
-        "Controllers.SensorFormController", 
-        "Controllers.TaskFormController", 
-        "Controllers.SensorcontrolFormController", 
-        "Controllers.NASMenuViewController", 
-        "Controllers.SensorViewController"
-    ], 
-    "old_lastmodify": {
-        "Controllers.SensorcontrolFormController": 0, 
-        "Controllers.SensorFormController": 0, 
-        "Controllers.SensorViewController": 1380456008.5612805, 
-        "Controllers.TaskFormController": 0, 
-        "Controllers.NASMenuViewController": 1380735540.4348729
-    }
+    ]
 }

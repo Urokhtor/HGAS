@@ -19,7 +19,7 @@ class SettingsManager(BaseManager):
             return False
             
     def has(self, name):
-        if not self.getByName(name) == None:
+        if not self.getByName(name) is None:
             return True
         
         return False

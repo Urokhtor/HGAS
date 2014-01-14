@@ -181,10 +181,10 @@ class Connection:
             s = None
             self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}'), message[0], json.loads(message[1]))
             return json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}')
-        
+
         try:
             s.settimeout(5)
-            s.connect((self.parent.clientManager.getByName(message[0]), self.port))
+            s.connect((self.parent.clientManager.getById(message[0])["ip"], self.port))
         except socket.error as e:
             s.close()
             s = None

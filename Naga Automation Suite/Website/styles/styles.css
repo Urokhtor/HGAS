@@ -183,9 +183,9 @@ div.devicecontainerdiv {
     border-radius: 5px;
 }
 
-div.devicecontainerdiv:hover {
+/*div.devicecontainerdiv:hover {
     background-color: #D4DEB8;
-}
+}*/
 
 div.devicestatediv {
     background-color: transparent;
@@ -198,13 +198,28 @@ div.devicestatediv {
 div.devicenamediv {
     background-color: transparent;
     float:left;
+    /*height: 30px;*/
     width:200px;
-    padding-top:4px;
+    /*padding-top:4px;*/
     padding-left: 2px;
     text-align: left;
 }
 
-div.deviceactioncontaineriv {
+input.devicenamebutton {
+    background-color: transparent;
+    /*background-color: #A7C942;*/
+    border-style: none;
+    margin: 0px auto;
+    height: 100%;
+    width: 100px;
+    font-weight: bold;
+}
+
+input.devicenamebutton:hover {
+    background-color: #D4DEB8;
+}
+
+div.deviceactioncontainerdiv {
     background-color: transparent;
     float: right;
 }

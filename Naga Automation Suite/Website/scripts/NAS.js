@@ -1,10 +1,12 @@
 /*
- * Constants
+ * Constants and global variables.
  *
  */
  
 var PAGE_FETCH = 403;
+var TABLE_FETCH = 404;
 var PRESERVE_COOKIE = 5; // For how many days to store the cookie.
+var currentPage = ""; // Keep track of the current page. Needs to be supplied to server in cases like fetching sensor data from server. BUT IS THIS SECURE?
 
 /*
  * Utility functions
@@ -60,14 +62,34 @@ function recursiveGenerator(element, object) {
         addParameter(newElem, "src", child);
         addParameter(newElem, "type", child);
         addParameter(newElem, "value", child);
-        addParameter(newElem, "onclick", child);
         addParameter(newElem, "method", child);
         addParameter(newElem, "action", child);
         addParameter(newElem, "innerHTML", child);
         addParameter(newElem, "href", child);
+        addParameter(newElem, "selected", child);
+        
+        // This implementation below needs to be changed so that we can pass parameters. Currently
+        // no parameters can be passed.
+        if (child["onclick"]) {
+            var params = child["onclick"].split(",");
+            newElem.onclick = function() {window[params[0]](params);}
+        }
+        
+        // onload
+        if (child["onload"]) {
+            var params = child["onload"];
+            newElem.onload = function() {window[params[0]](params);}
+        }
+        
+        // onchange
+        if (child["onchange"]) {
+            var params = child["onchange"];
+            newElem.onchange = function() {window[params[0]](params);}
+        }
         
         element.appendChild(newElem);
         
+        // Our current object has child elements to recursively add its children.
         if (object["childcount"]) recursiveGenerator(newElem, child);
     }
 }
@@ -82,7 +104,34 @@ String.prototype.endsWith = function(suffix) {
 
 /* ==================== End of utility functions ==================== */
 
-function setMenu(menu, activeButton) {
+function jumpToPage(params) {
+    var menuId = params[1];
+    var menuButtonId = params[2];
+    var subMenuButtonId = params[3];
+    var queryParams = {};
+    
+    for (var i = 4; i < params.length; i++) {
+        var tmp = params[i].split(":");
+        queryParams[tmp[0]] = tmp[1];
+    }
+    
+    var menu = document.getElementById(menuId);
+    var menuButton = document.getElementById(menuButtonId);
+    var subMenuButton = document.getElementById(subMenuButtonId);
+    
+    createCookie(menu.id, menu.id + " " + subMenuButton.id, PRESERVE_COOKIE);
+    setMenu(menu, menuButton, queryParams);
+}
+
+function setMenu(menu, activeButton, params) {
+    if (typeof menu === "string") {
+        menu = document.getElementById(menu);
+    }
+    
+    if (typeof activeButton === "string") {
+        activeButton = document.getElementById(activeButton);
+    }
+    
     createCookie("currentmenu", menu.id + " " + activeButton.id, PRESERVE_COOKIE);
 
     var menuDiv = document.getElementById("menu");
@@ -100,16 +149,24 @@ function setMenu(menu, activeButton) {
     
     if (page != null) {
         page = page.split(" ");
-        setSubMenu(document.getElementById(page[0]), document.getElementById(page[1]));
+        setSubMenu(document.getElementById(page[0]), document.getElementById(page[1]), params);
     }
     
     else {
         var prefix = menu.id.split("_")[1];
-        setSubMenu(menu, document.getElementById(prefix + "Selectbutton"));
+        setSubMenu(menu, document.getElementById(prefix + "Selectbutton"), params);
     }
 }
 
-function setSubMenu(menu, activeButton) {
+function setSubMenu(menu, activeButton, params) {
+    if (typeof menu === "string") {
+        menu = document.getElementById(menu);
+    }
+    
+    if (typeof activeButton === "string") {
+        activeButton = document.getElementById(activeButton);
+    }
+    
     console.log(menu);
     console.log(activeButton);
     
@@ -137,8 +194,13 @@ function setSubMenu(menu, activeButton) {
     }
     
     data = {};
-    data["name"] = activeButton.id
+    data["name"] = activeButton.id;
+    currentPage = activeButton.id;
     data["action"] = PAGE_FETCH;
+    
+    if (typeof params !== "undefined") {
+        data["params"] = params;
+    }
     
     postHTTPRequest(JSON.stringify(data), generatePage);
 }
@@ -214,16 +276,14 @@ function generatePage(_response) {
     var tmp = _response.replace(/\\"/g, "'").replace(/"/g, "").replace(/'/g, "\"");
     response = JSON.parse(tmp);
     
-    var mainContainer = document.getElementById("mainContainer");//jQuery("mainContainer");
-    console.log(mainContainer);
-    mainContainer.innerHTML = "";//mainContainer.html("");
-    console.log(mainContainer);
-    
+    var mainContainer = document.getElementById("mainContainer");
+    mainContainer.innerHTML = "";
+    console.log(response);
     if (!response["renderbrowser"]) {
-        mainContainer.innerHTML = JSON.stringify(response["source"]);//mainContainer.html(JSON.stringify(response["source"]));
+        mainContainer.innerHTML = JSON.stringify(response["source"]);
         return;
     }
-    console.log(response["source"]);
+    
     var container = response["source"]["child1"];
     var element = document.getElementById("mainContainer");
     element.innerHTML = "";
@@ -231,6 +291,17 @@ function generatePage(_response) {
     recursiveGenerator(element, container);
     var end = new Date().getMilliseconds();
     console.log("Page generation took " + (end-start) + " ms");
+}
+
+function generateViewTable(_response) {
+    var tmp = _response.replace(/\\"/g, "'").replace(/"/g, "").replace(/'/g, "\"");
+    response = JSON.parse(tmp);
+    console.log(response);
+    var element = document.getElementById(response["id"]);
+    console.log(element);
+    element.innerHTML = "";
+    recursiveGenerator(element, response);
+
 }
 
 // Adds a function that needs to be executed on page load.
@@ -260,6 +331,7 @@ window.onclick = function(e){
     */
   
     var id = e.srcElement.id;
+    var className = e.srcElement.className;
     
     if (id.endsWith("Button")) {
         var submenuId = id.split("Button")[0];
@@ -270,21 +342,29 @@ window.onclick = function(e){
     else if (id.endsWith("Selectbutton")) {
         var container = document.getElementById("submenu");
         var children = container.getElementsByTagName("div");
-        console.log("ID: " + id);
+        
         for (var i = 0; i < children.length; i++) {
             console.log(children[i]);
             if (id.startsWith(children[i].id.split("_")[1])) {
-                console.log("true");
                 setSubMenu(children[i], e.srcElement);
                 break;
             }
         }
     }
+    
+    else if (className === "leftcolumnbutton") {
+        data = {};
+        data["name"] = currentPage;
+        data["params"] = {}
+        data["params"]["id"] = id;
+        data["action"] = TABLE_FETCH;
+        
+        postHTTPRequest(JSON.stringify(data), generateViewTable);
+    }
   
-    e = e || window.event;
+    /*e = e || window.event;
     var from = findParent('a',e.target || e.srcElement);
     if (from) {
-        /* it's a link, actions here */
         console.log(from);
         console.log(e);
         e.preventDefault();
@@ -295,15 +375,11 @@ window.onclick = function(e){
         data["action"] = PAGE_FETCH;
 
         postHTTPRequest(JSON.stringify(data), durp);
-    }
-}
-
-function durp(response) {
-    console.log(response);
+    }*/
 }
 
 //find first parent with tagName [tagname]
-function findParent(tagname,el){
+/*function findParent(tagname,el){
   if ((el.nodeName || el.tagName).toLowerCase()===tagname.toLowerCase()){
     return el;
   }
@@ -313,4 +389,4 @@ function findParent(tagname,el){
     }
   }
   return null;
-}
+}*/

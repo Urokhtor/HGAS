@@ -1,11 +1,155 @@
 {
-    "renderbrowser": true,
     "source": {
-        "childcount": 1, 
         "child1": {
-            "id": "mainContainer", 
+            "child1": {
+                "child1": {
+                    "child3": {
+                        "child1": {
+                            "child2": {
+                                "className": "buttonRowItem", 
+                                "element": "input", 
+                                "id": "saveSendbutton", 
+                                "name": "saveSendbutton", 
+                                "type": "button", 
+                                "value": "Save"
+                            }, 
+                            "child1": {
+                                "className": "buttonRowItem", 
+                                "element": "input", 
+                                "id": "removeSendbutton", 
+                                "name": "removeSendbutton", 
+                                "type": "button", 
+                                "value": "Remove"
+                            }, 
+                            "className": "buttonRow", 
+                            "element": "div", 
+                            "id": "buttonRow", 
+                            "childcount": 2
+                        }, 
+                        "className": "fullWidth", 
+                        "element": "table", 
+                        "childcount": 1
+                    }, 
+                    "child2": {
+                        "child1": {
+                            "child3": {
+                                "child3": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Index"
+                                }, 
+                                "child2": {
+                                    "child1": {
+                                        "element": "select", 
+                                        "id": "sensorClient", 
+                                        "name": "sensorClient"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "element": "td", 
+                                    "childcount": 1
+                                }, 
+                                "child1": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Client"
+                                }, 
+                                "element": "tr", 
+                                "child4": {
+                                    "child1": {
+                                        "element": "input", 
+                                        "id": "sensorIndex", 
+                                        "name": "sensorIndex", 
+                                        "type": "text"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "element": "td", 
+                                    "childcount": 1
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child2": {
+                                "child3": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Type"
+                                }, 
+                                "child2": {
+                                    "child1": {
+                                        "element": "input", 
+                                        "id": "sensorName", 
+                                        "name": "sensorName", 
+                                        "type": "text"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "element": "td", 
+                                    "childcount": 1
+                                }, 
+                                "child1": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Name"
+                                }, 
+                                "element": "tr", 
+                                "child4": {
+                                    "child1": {
+                                        "element": "select", 
+                                        "id": "sensorType", 
+                                        "name": "sensorType"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "element": "td", 
+                                    "childcount": 1
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child1": {
+                                "element": "input", 
+                                "name": "sensorId", 
+                                "id": "sensorId", 
+                                "type": "hidden"
+                            }, 
+                            "element": "tbody", 
+                            "id": "tableRows", 
+                            "childcount": 3
+                        }, 
+                        "className": "fullWidth", 
+                        "element": "table", 
+                        "childcount": 1
+                    }, 
+                    "child1": {
+                        "child1": {
+                            "child1": {
+                                "child1": {
+                                    "className": "headCell", 
+                                    "element": "th", 
+                                    "innerHTML": "Sensor management:"
+                                }, 
+                                "element": "tr", 
+                                "childcount": 1
+                            }, 
+                            "element": "thead", 
+                            "childcount": 1
+                        }, 
+                        "className": "fullWidth", 
+                        "element": "table", 
+                        "childcount": 1
+                    }, 
+                    "className": "viewTable", 
+                    "element": "div", 
+                    "id": "viewTable", 
+                    "childcount": 3
+                }, 
+                "childcount": 1, 
+                "element": "form", 
+                "method": "post", 
+                "id": "sensormanagementForm"
+            }, 
+            "className": "container", 
             "element": "div", 
-            "className": "container"
-        }
-    }
+            "childcount": 1, 
+            "id": "mainContainer"
+        }, 
+        "childcount": 1
+    }, 
+    "renderbrowser": true
 }

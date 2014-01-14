@@ -34,7 +34,7 @@ class DeviceManager(BaseManager):
         self.parent.configManager.getConf(CONFIG_CORE).setItem("devices", devices)
         return True
     
-    def createSensor(self, name, type, clientname, index):
+    def createSensor(self, name, type, clientid, index):
         """
             Creates a new sensor object with the parameters supplied and assigns a new unique ID to it
             and then returns it. Use DeviceManager.insertSensor(sensor) to add the newly created sensor
@@ -45,7 +45,7 @@ class DeviceManager(BaseManager):
         sensor["name"] = name
         sensor["type"] = type
         sensor["index"] = index
-        sensor["clientname"] = clientname
+        sensor["clientid"] = clientid
         sensor["lastreading"] = 0
         sensor["lastupdated"] = 0
         sensor["alltimemax"] = 0
@@ -54,7 +54,7 @@ class DeviceManager(BaseManager):
         
         return sensor
     
-    def createDevice(self, name, type, clientname, index, maxontime, useshygrometer = False, hygrometerindex = -1):
+    def createDevice(self, name, type, clientid, index, maxontime, useshygrometer = False, hygrometerindex = -1):
         """
             Creates a new device object with the parameters supplied and assigns a new unique ID to it
             and then returns it. Use DeviceManager.insertDevice(device) to add the newly created device
@@ -65,7 +65,7 @@ class DeviceManager(BaseManager):
         device["name"] = name
         device["type"] = type
         device["index"] = index
-        device["clientname"] = clientname
+        device["clientid"] = clientid
         device["state"] = 0
         device["maxontime"] = maxontime
         device["useshygrometer"] = useshygrometer
@@ -78,8 +78,8 @@ class DeviceManager(BaseManager):
         if self.hasSensor(sensor["id"] and not isStartup):
             return '{"' + KEY_ERROR + '": ' + str(SENSOR_EXISTS_ERROR) + '}'
             
-        response = self.parent.connection.send((sensor["clientname"], self.parent.protocol.insert(sensor, TYPE_SENSOR, isStartup)))
-        
+        response = self.parent.connection.send((sensor["clientid"], self.parent.protocol.insert(sensor, TYPE_SENSOR, isStartup)))
+
         if KEY_ERROR in response: return response
             
         if response[KEY_RESPONSE] == INSERT_SENSOR_SUCCESS and not isStartup:
@@ -96,7 +96,7 @@ class DeviceManager(BaseManager):
         response = {}
         
         if device["type"] == DEVICE_TYPE_PUMP:
-            response = self.parent.connection.send((device["clientname"], self.parent.protocol.insert(device, TYPE_PUMP, isStartup)))
+            response = self.parent.connection.send((device["clientid"], self.parent.protocol.insert(device, TYPE_PUMP, isStartup)))
             
             if KEY_ERROR in response: return response
             if response[KEY_RESPONSE] != INSERT_PUMP_SUCCESS: return response
@@ -114,7 +114,7 @@ class DeviceManager(BaseManager):
         if not self.hasSensor(sensor["id"]):
             return '{"' + KEY_ERROR + '": ' + str(SENSOR_DOESNT_EXIST_ERROR) + '}'
             
-        response = self.parent.connection.send((sensor["clientname"], self.parent.protocol.remove(sensor, TYPE_SENSOR)))
+        response = self.parent.connection.send((sensor["clientid"], self.parent.protocol.remove(sensor, TYPE_SENSOR)))
         
         if KEY_ERROR in response: return response
             
@@ -130,7 +130,7 @@ class DeviceManager(BaseManager):
         if not self.hasDevice(device["id"]):
             return '{"' + KEY_ERROR + '": ' + str(PUMP_DOESNT_EXIST_ERROR) + '}'
             
-        response = self.parent.connection.send((device["clientname"], self.parent.protocol.remove(device, TYPE_PUMP)))
+        response = self.parent.connection.send((device["clientid"], self.parent.protocol.remove(device, TYPE_PUMP)))
         
         if KEY_ERROR in response: return response
         
@@ -152,31 +152,9 @@ class DeviceManager(BaseManager):
 
         return self._getById("sensors", id)
 
-        """
-        sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
-        
-        if not id is None:
-            for sensor in sensors:
-                if sensor["id"] == id:
-                    return sensor
-
-        return None
-        """
-
     def getDeviceById(self, id):
 
         return self._getById("devices", id)
-
-        """
-        devices = self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
-            
-        if not id is None:
-            for device in devices:
-                if device["id"] == id:
-                    return device
-        
-        return None
-        """
 
     def getSensorByName(self, name):
 
@@ -193,36 +171,12 @@ class DeviceManager(BaseManager):
 
         return self._has("sensors", id)
 
-        """
-        sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
-        
-        if sensors is None: return False
-        
-        for sensor in sensors:
-            if sensor["id"] == id:
-                return True
-                
-        return False
-        """
-
     def hasDevice(self, id):
         """
             Checks if the device list has a device with given unique ID.
         """
 
         return self._has("devices", id)
-
-        """
-        devices = self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
-        
-        if devices is None: return False
-        
-        for device in devices:
-            if device["id"] == id:
-                return True
-                
-        return False
-        """
 
     def hasSensorByName(self, name):
         """
@@ -232,16 +186,6 @@ class DeviceManager(BaseManager):
 
         return self._hasByName("sensors", name)
 
-        """
-        sensors = self.parent.configManager.getConf(CONFIG_CORE).getItem("sensors", None)
-        
-        for sensor in sensors:
-            if sensor["name"] == name:
-                return True
-                
-        return False
-        """
-
     def hasDeviceByName(self, name):
         """
             Checks if the device list has a device with given name. Largely needed when adding new devices
@@ -249,13 +193,3 @@ class DeviceManager(BaseManager):
         """
 
         return self._hasByName("devices", name)
-
-        """
-        devices = self.parent.configManager.getConf(CONFIG_CORE).getItem("devices", None)
-        
-        for device in devices:
-            if device["name"] == name:
-                return True
-
-        return False
-        """

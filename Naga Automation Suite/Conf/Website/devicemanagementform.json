@@ -1,0 +1,155 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "childcount": 1, 
+        "child1": {
+            "id": "mainContainer", 
+            "childcount": 1, 
+            "element": "div", 
+            "child1": {
+                "id": "devicemanagementForm", 
+                "method": "post", 
+                "element": "form", 
+                "child1": {
+                    "id": "viewTable", 
+                    "element": "div", 
+                    "child1": {
+                        "childcount": 1, 
+                        "element": "table", 
+                        "child1": {
+                            "childcount": 1, 
+                            "element": "thead", 
+                            "child1": {
+                                "childcount": 1, 
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "th", 
+                                    "innerHTML": "Device management:", 
+                                    "className": "headCell"
+                                }
+                            }
+                        }, 
+                        "className": "fullWidth"
+                    }, 
+                    "className": "viewTable", 
+                    "child3": {
+                        "childcount": 1, 
+                        "element": "table", 
+                        "child1": {
+                            "id": "buttonRow", 
+                            "element": "div", 
+                            "child1": {
+                                "id": "removeSendbutton", 
+                                "name": "removeSendbutton", 
+                                "element": "input", 
+                                "className": "buttonRowItem", 
+                                "type": "button", 
+                                "value": "Remove"
+                            }, 
+                            "className": "buttonRow", 
+                            "child2": {
+                                "id": "saveSendbutton", 
+                                "name": "saveSendbutton", 
+                                "element": "input", 
+                                "className": "buttonRowItem", 
+                                "type": "button", 
+                                "value": "Save"
+                            }, 
+                            "childcount": 2
+                        }, 
+                        "className": "fullWidth"
+                    }, 
+                    "child2": {
+                        "childcount": 1, 
+                        "element": "table", 
+                        "child1": {
+                            "id": "tableRows", 
+                            "element": "tbody", 
+                            "child1": {
+                                "id": "deviceId", 
+                                "name": "deviceId", 
+                                "element": "input", 
+                                "type": "hidden"
+                            }, 
+                            "child3": {
+                                "child4": {
+                                    "childcount": 1, 
+                                    "element": "td", 
+                                    "child1": {
+                                        "name": "deviceIndex", 
+                                        "type": "text", 
+                                        "element": "input", 
+                                        "id": "deviceIndex"
+                                    }, 
+                                    "className": "dataCell"
+                                }, 
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "td", 
+                                    "innerHTML": "Client", 
+                                    "className": "labelCell"
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "innerHTML": "Index", 
+                                    "className": "labelCell"
+                                }, 
+                                "child2": {
+                                    "childcount": 1, 
+                                    "element": "td", 
+                                    "child1": {
+                                        "name": "deviceClient", 
+                                        "id": "deviceClient", 
+                                        "element": "select"
+                                    }, 
+                                    "className": "dataCell"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child2": {
+                                "child4": {
+                                    "childcount": 1, 
+                                    "element": "td", 
+                                    "child1": {
+                                        "name": "deviceType", 
+                                        "id": "deviceType", 
+                                        "element": "select"
+                                    }, 
+                                    "className": "dataCell"
+                                }, 
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "td", 
+                                    "innerHTML": "Name", 
+                                    "className": "labelCell"
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "innerHTML": "Type", 
+                                    "className": "labelCell"
+                                }, 
+                                "child2": {
+                                    "childcount": 1, 
+                                    "element": "td", 
+                                    "child1": {
+                                        "name": "deviceName", 
+                                        "type": "text", 
+                                        "element": "input", 
+                                        "id": "deviceName"
+                                    }, 
+                                    "className": "dataCell"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "childcount": 3
+                        }, 
+                        "className": "fullWidth"
+                    }, 
+                    "childcount": 3
+                }, 
+                "childcount": 1
+            }, 
+            "className": "container"
+        }
+    }
+}

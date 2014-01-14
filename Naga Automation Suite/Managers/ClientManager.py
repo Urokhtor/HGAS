@@ -37,6 +37,13 @@ class ClientManager(BaseManager):
 
         return self._getByName("clients", name)
 
+    def getAllFromField(self, field):
+        """
+
+        """
+
+        return self._getAllFromField("clients", field)
+
     def has(self, id):
         """
 

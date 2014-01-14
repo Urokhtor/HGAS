@@ -1,0 +1,17 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "child1": {
+            "child1": {
+                "element": "div", 
+                "className": "device", 
+                "id": "deviceContainer"
+            }, 
+            "element": "div", 
+            "className": "container", 
+            "id": "mainContainer", 
+            "childcount": 1
+        }, 
+        "childcount": 1
+    }
+}

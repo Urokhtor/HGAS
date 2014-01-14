@@ -8,7 +8,7 @@
     "arduinoport": 48371, 
     "logginginterval": 120, 
     "generateplots": true, 
-    "idsequence": 1027,
+    "idsequence": 1028,
     "verbose": true, 
     "weeklyplotinterval": 120, 
     "listenport": 8082, 

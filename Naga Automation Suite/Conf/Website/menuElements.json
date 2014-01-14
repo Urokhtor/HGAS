@@ -19,7 +19,7 @@
                 "value": "Settings", 
                 "className": "menubutton", 
                 "type": "button", 
-                "id": "settingsButton", 
+                "id": "settingsButton",
                 "element": "input"
             }, 
             "child7": {

@@ -111,7 +111,7 @@ def dispatchRequest(parent, request):
         # I don't know if it's really needed. TYPE_VIEW should be able to handle it all.
         print("Derp")
         
-    return '{"' + KEY_ERROR + '": "Could not load page"}'
+    return '{"' + KEY_ERROR + '": "Could not load page"}' # HOW ABOUT MAKING A STANDARD 404 PAGE INSTEAD? PROBABLY NOT SUITABLE FOR STUFF LIKE SENSOR REQUESTS.
 
 def reloadIfNeeded(parent, name):
     tmp = time()
