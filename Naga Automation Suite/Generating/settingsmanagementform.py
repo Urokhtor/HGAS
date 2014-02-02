@@ -12,10 +12,9 @@ tmp["source"] = {}
 mainContainer = FEET.createMainContainer(tmp["source"])
 
 deviceHolder = JFET.addChild(mainContainer, "div")
-JFET.addParameter(deviceHolder, "id", "deviceContainer")
+JFET.addParameter(deviceHolder, "id", "settingsContainer")
 JFET.addParameter(deviceHolder, "className", "listContainer")
 
-
-f = open("Conf/Website/deviceview.json", "w+")
+f = open("Conf/Website/settingsmanagementform.json", "w+")
 json.dump(tmp, f, indent = 4)
 f.close()

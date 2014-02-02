@@ -1,16 +1,100 @@
 {
-    "arduinolistenport": 48372, 
-    "debug": true, 
-    "sensorcontrolinterval": 120, 
-    "eventloglength": 40, 
-    "dailyplotinterval": 120, 
-    "localip": "", 
-    "arduinoport": 48371, 
-    "logginginterval": 120, 
-    "generateplots": true, 
-    "idsequence": 1028,
-    "verbose": true, 
-    "weeklyplotinterval": 120, 
-    "listenport": 8082, 
-    "devmode": true
+    "settings": [
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "arduinolistenport", 
+            "value": 48372
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "arduinoport", 
+            "value": 48371
+        }, 
+        {
+            "hidden": false, 
+            "type": "bool", 
+            "name": "debug", 
+            "value": false
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "dailyplotinterval", 
+            "value": 30
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "sensorcontrolinterval", 
+            "value": 5
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "eventloglength", 
+            "value": 40
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "logginginterval", 
+            "value": 5
+        }, 
+        {
+            "hidden": false, 
+            "type": "bool", 
+            "name": "generateplots", 
+            "value": false
+        }, 
+        {
+            "hidden": true, 
+            "type": "long", 
+            "name": "idsequence", 
+            "value": 1015
+        }, 
+        {
+            "hidden": false, 
+            "type": "bool", 
+            "name": "verbose", 
+            "value": true
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "weeklyplotinterval", 
+            "value": 60
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "listenport", 
+            "value": 8080
+        }, 
+        {
+            "hidden": false, 
+            "type": "bool", 
+            "name": "devmode", 
+            "value": true
+        }, 
+        {
+            "hidden": false, 
+            "type": "string", 
+            "name": "plottype", 
+            "value": "none"
+        }, 
+        {
+            "hidden": false, 
+            "type": "bool", 
+            "name": "automaticplots", 
+            "value": true
+        }, 
+        {
+            "hidden": false, 
+            "type": "long", 
+            "name": "notificationfadeout", 
+            "value": 5
+        }
+    ]
 }

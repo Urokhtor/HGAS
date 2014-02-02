@@ -1,5 +1,6 @@
-import sys
-sys.path.append("G:\\Programming\Python\\Naga-Automation-Suite\\Naga Automation Suite")
+
+import sys, os
+sys.path.append(os.getcwd())
 
 from Tools.JSONFrontEndTool import JSONFrontEndTool as JFET
 import json
@@ -10,8 +11,8 @@ f.close()
 
 submenu = JFET.findElementById(tmp["source"]["submenu"], "submenu")
 submenu = {}
-section = ["sensor", "device", "task", "sensorcontrol", "eventlog", "settings", "documentation"]
-value = ["Info", "Devices", "Tasks", "Sensorcontrol", "Eventlog", "Settings", "Docs"]
+section = ["sensor", "device", "task", "sensorcontrol", "client", "eventlog", "settings", "documentation"]
+value = ["Info", "Devices", "Tasks", "Sensorcontrol", "Clients", "Eventlog", "Settings", "Docs"]
 
 for i in range(0, 7):
     childDiv = JFET.addChild(submenu, "div")
@@ -36,7 +37,7 @@ for i in range(0, 7):
     #JFET.addParameter(childInput, "href", "/test/" + value[i].lower())
     
     # Generate management page for first four tabs.
-    if i <= 3:
+    if i <= 4:
         childLi = JFET.addChild(childUl, "li")
         JFET.addParameter(childLi, "className", "menu")
     

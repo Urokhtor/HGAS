@@ -3,7 +3,12 @@
     "sensorSelectbutton": "SensorViewController",
     "sensormanagementSelectbutton": "SensorManagementFormController", 
     "deviceSelectbutton": "DeviceViewController", 
-    "devicemanagementSelectbutton": "DeviceManagementFormController", 
+    "devicemanagementSelectbutton": "DeviceManagementFormController",
+    "taskSelectbutton": "TaskViewController",
+    "taskmanagementSelectbutton": "TaskManagementFormController",
     "sensorcontrolSelectbutton": "SensorcontrolViewController", 
-    "sensorcontrolmanagementSelectbutton": "SensorcontrolFormController"
+    "sensorcontrolmanagementSelectbutton": "SensorcontrolFormController",
+    "clientSelectbutton": "ClientViewController",
+    "clientmanagementSelectbutton": "ClientManagementFormController",
+    "settingsSelectbutton": "SettingsManagementFormController"
 }

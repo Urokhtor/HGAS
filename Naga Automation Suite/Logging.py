@@ -97,7 +97,7 @@ class Logging:
         """
         self.parent.logging.logDebug(self.__name__ + "." + "getSensorReading")
         
-        return self.parent.connection.send((sensor["clientname"], self.parent.protocol.readSensor(sensor["id"], sensor["index"])))
+        return self.parent.connection.send(self.parent.protocol.readSensor(sensor))
     
     def getSensorReadings(self, params):
         """
@@ -107,7 +107,7 @@ class Logging:
         
         tmp = []
         
-        for sensor in self.parent.deviceManager.getSensors():
+        for sensor in self.parent.sensorManager.getAll():
             tmp.append(self.getSensorReading(sensor))
     
         return tmp
@@ -120,7 +120,8 @@ class Logging:
         
         
         tmp = []
-        linesToRead = self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("eventloglength", 40)
+        #linesToRead = self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("eventloglength", 40)
+        linesToRead = self.parent.settingsManager.getByName("eventloglength")
         
         for line in reversed(open("Logs/eventlog.csv", "r").readlines()):
             try:
@@ -225,13 +226,13 @@ class Logging:
     def logRead(self, response, client, request):
         self.parent.logging.logDebug(self.__name__ + "." + "logRead")
         
-        sensor = self.parent.deviceManager.getSensorById(request[KEY_ID])
+        sensor = self.parent.sensorManager.getById(request[KEY_ID])
         
         if sensor == None:
             return
         
         if response[KEY_RESPONSE] == READ_SENSOR_SUCCESS and KEY_READING in response:
-            self.parent.deviceManager.updateSensorReading(request[KEY_ID], response[KEY_READING])
+            self.parent.sensorManager.updateSensorReading(request[KEY_ID], response[KEY_READING])
             file = "Logs/" + str(sensor["id"]) + "_" + str(sensor["type"]) + ".csv"
             f = open(file, "a")
             f.write(str(time()) + "," + str(response[KEY_READING]) + "\n")
@@ -249,7 +250,7 @@ class Logging:
     def logWrite(self, response, client, request):
         self.parent.logging.logDebug(self.__name__ + "." + "logWrite")
         
-        device = self.parent.deviceManager.getDeviceById(request[KEY_ID])
+        device = self.parent.deviceManager.getById(request[KEY_ID])
         
         if device == None:
             return
@@ -281,7 +282,7 @@ class Logging:
         self.parent.logging.logDebug(self.__name__ + "." + "logInsert")
         
         if response[KEY_RESPONSE] == INSERT_SENSOR_SUCCESS:
-            sensor = self.parent.deviceManager.getSensorById(request[KEY_ID])
+            sensor = self.parent.sensorManager.getById(request[KEY_ID])
             
             if sensor != None and not request[KEY_IS_STARTUP]:
                 self.logEvent("Log message error: Couldn't insert sensor, it already exists", "red")
@@ -295,7 +296,7 @@ class Logging:
                 self.logEvent("Received message: Inserted sensor with id " + str(request[KEY_ID]), "green")
         
         elif response[KEY_RESPONSE] == INSERT_PUMP_SUCCESS:
-            device = self.parent.deviceManager.getDeviceById(request[KEY_ID])
+            device = self.parent.deviceManager.getById(request[KEY_ID])
             
             if device != None and not request[KEY_IS_STARTUP]:
                 self.logEvent("Log message error: Couldn't insert device, it already exists", "red")
@@ -315,7 +316,7 @@ class Logging:
         self.parent.logging.logDebug(self.__name__ + "." + "logModify")
         
         if response[KEY_RESPONSE] == MODIFY_SENSOR_SUCCESS:
-            sensor = self.parent.deviceManager.getDeviceById(request[KEY_ID])
+            sensor = self.parent.deviceManager.getById(request[KEY_ID])
             
             if sensor == None:
                 self.logEvent("Log message error: Couldn't modify sensor, it doesn't exist", "red")
@@ -326,7 +327,7 @@ class Logging:
                 return
                 
         elif response[KEY_RESPONSE] == MODIFY_PUMP_SUCCESS:
-            device = self.parent.deviceManager.getDeviceById(request[KEY_ID])
+            device = self.parent.deviceManager.getById(request[KEY_ID])
             
             if device == None:
                 self.logEvent("Log message error: Couldn't modify device, it doesn't exist", "red")
@@ -343,7 +344,7 @@ class Logging:
         self.parent.logging.logDebug(self.__name__ + "." + "logRemove")
         
         if response[KEY_RESPONSE] == REMOVE_SENSOR_SUCCESS:
-            sensor = self.parent.deviceManager.getSensorById(request[KEY_ID])
+            sensor = self.parent.sensorManager.getById(request[KEY_ID])
             
             if sensor == None:
                 self.logEvent("Log message error: Sensor doesn't exist, couldn't remove it", "red")
@@ -354,7 +355,7 @@ class Logging:
                 self.logEvent("Received message: Removed sensor " + name, "green")
                 
         elif response[KEY_RESPONSE] == REMOVE_PUMP_SUCCESS:
-            device = self.parent.deviceManager.getDeviceById(request[KEY_ID])
+            device = self.parent.deviceManager.getById(request[KEY_ID])
             
             if device == None:
                 self.logEvent("Log message error: Device doesn't exist, couldn't remove it", "red")
@@ -379,15 +380,15 @@ class Logging:
     def createMessage(self, response):
         self.parent.logging.logDebug(self.__name__ + "." + "createMessage")
         
-        device = self.parent.deviceManager.getDeviceById(response[KEY_ID])
+        device = self.parent.deviceManager.getById(response[KEY_ID])
             
-        if device == None:
+        if device is None:
             self.logEvent("Log message error: Couldn't create message because couldn't find the device with ID " + str(response[KEY_ID]), "red")
             return None, None
     
         if response[KEY_RESPONSE] == TOGGLED_DEVICE_OFF:
-            client = device["clientname"]
-            request = self.parent.protocol.writeEnable(device["id"], device["index"])
+            client = device["clientid"]
+            request = self.parent.protocol.writeEnable(device)
             return client, json.loads(request)
         
         else:
@@ -417,7 +418,8 @@ class Logging:
             f.write(str(time()) + "," + text + "\n")
             f.close()
             
-            if self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("verbose", True):
+            #if self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("verbose", True):
+            if self.parent.settingsManager.getByName("verbose"):
                 print("[" + strftime("%H:%M:%S") + "] " + message) # Debug code. Add handling to the Config module so this can be made optional.
         
         except:
@@ -430,7 +432,8 @@ class Logging:
             it exists only in the console where the debug data is written into.
         """
         
-        if self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("debug", False):
+        #if self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("debug", False):
+        if self.parent.settingsManager.getByName("debug"):
             print("[" + datetime.fromtimestamp(time()).strftime("%H:%M:%S.%f") + "] " + message)
             #print("[" + str(tmp.hour) + ":" + str(tmp.minute) + ":" + str(tmp.second) + "." + str(round(tmp.microsecond/1000)) + "] " + message)
         

@@ -1,0 +1,187 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "child1": {
+            "element": "div", 
+            "className": "container", 
+            "childcount": 1, 
+            "child1": {
+                "element": "form", 
+                "child1": {
+                    "element": "div", 
+                    "className": "viewTable", 
+                    "child2": {
+                        "element": "table", 
+                        "className": "fullWidth", 
+                        "child1": {
+                            "element": "tbody", 
+                            "child4": {
+                                "element": "tr", 
+                                "child4": {
+                                    "element": "td", 
+                                    "className": "dataCell", 
+                                    "id": "task"
+                                }, 
+                                "child2": {
+                                    "element": "td", 
+                                    "className": "dataCell", 
+                                    "child1": {
+                                        "element": "input", 
+                                        "type": "checkbox", 
+                                        "id": "taskIsPermanent", 
+                                        "name": "taskIsPermanent"
+                                    }, 
+                                    "childcount": 1
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": ""
+                                }, 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Is permanent"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child2": {
+                                "element": "tr", 
+                                "child4": {
+                                    "element": "td", 
+                                    "className": "dataCell", 
+                                    "child1": {
+                                        "element": "select", 
+                                        "id": "taskDevice", 
+                                        "name": "taskDevice"
+                                    }, 
+                                    "childcount": 1
+                                }, 
+                                "child2": {
+                                    "element": "td", 
+                                    "className": "dataCell", 
+                                    "child1": {
+                                        "element": "input", 
+                                        "type": "text", 
+                                        "id": "taskName", 
+                                        "name": "taskName"
+                                    }, 
+                                    "childcount": 1
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Device"
+                                }, 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Name"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child3": {
+                                "element": "tr", 
+                                "child4": {
+                                    "element": "td", 
+                                    "className": "dataCell", 
+                                    "child1": {
+                                        "element": "input", 
+                                        "type": "text", 
+                                        "id": "taskEvents", 
+                                        "name": "taskEvents"
+                                    }, 
+                                    "childcount": 1
+                                }, 
+                                "child2": {
+                                    "element": "td", 
+                                    "className": "dataCell", 
+                                    "child1": {
+                                        "element": "select", 
+                                        "id": "taskAction", 
+                                        "name": "taskAction"
+                                    }, 
+                                    "childcount": 1
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Events"
+                                }, 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Action"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child1": {
+                                "element": "input", 
+                                "type": "hidden", 
+                                "name": "taskId", 
+                                "id": "taskId"
+                            }, 
+                            "id": "tableRows", 
+                            "childcount": 4
+                        }, 
+                        "childcount": 1
+                    }, 
+                    "child3": {
+                        "element": "table", 
+                        "className": "fullWidth", 
+                        "child1": {
+                            "element": "div", 
+                            "className": "buttonRow", 
+                            "child2": {
+                                "onclick": "doSubmit,taskmanagementForm,save",
+                                "element": "input", 
+                                "className": "decoratedButton buttonRowItem", 
+                                "value": "Save", 
+                                "type": "button", 
+                                "id": "saveSendbutton", 
+                                "name": "saveSendbutton"
+                            }, 
+                            "child1": {
+                                "onclick": "doSubmit,taskmanagementForm,remove", 
+                                "element": "input", 
+                                "className": "decoratedButton buttonRowItem", 
+                                "value": "Remove", 
+                                "type": "button", 
+                                "id": "removeSendbutton", 
+                                "name": "removeSendbutton"
+                            }, 
+                            "id": "buttonRow", 
+                            "childcount": 2
+                        }, 
+                        "childcount": 1
+                    }, 
+                    "child1": {
+                        "element": "table", 
+                        "className": "fullWidth", 
+                        "child1": {
+                            "element": "thead", 
+                            "child1": {
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "th", 
+                                    "className": "headCell", 
+                                    "innerHTML": "Task management:"
+                                }, 
+                                "childcount": 1
+                            }, 
+                            "childcount": 1
+                        }, 
+                        "childcount": 1
+                    }, 
+                    "id": "viewTable", 
+                    "childcount": 3
+                }, 
+                "method": "post", 
+                "childcount": 1, 
+                "id": "taskmanagementForm"
+            }, 
+            "id": "mainContainer"
+        }, 
+        "childcount": 1
+    }
+}

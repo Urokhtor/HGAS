@@ -51,9 +51,9 @@ class FrontEndElementTool:
 
         return childDivViewTable
 
-    def createLeftButtonColumn(mainContainer, header):
+    def createLeftButtonColumn(mainContainer, header, id):
         childDiv = JFET.addChild(mainContainer, "div")
-        JFET.addParameter(childDiv, "id", "leftSensorColumn")
+        JFET.addParameter(childDiv, "id", "leftButtonColumn")
         JFET.addParameter(childDiv, "className", "leftcolumn")
 
         #childTable = JFET.addChild(childDiv, "table")
@@ -62,14 +62,14 @@ class FrontEndElementTool:
         JFET.addParameter(childH3, "innerHTML", header)
 
         childUl = JFET.addChild(childDiv, "ul")
-        JFET.addParameter(childUl, "id", "sensorUL")
+        JFET.addParameter(childUl, "id", id)
         JFET.addParameter(childUl, "className", "leftcolumnul")
 
         return childDiv
 
     def createRightDivContainer(mainContainer):
         childDivRight = JFET.addChild(mainContainer, "div")
-        JFET.addParameter(childDivRight, "id", "rightSensorColumn")
+        JFET.addParameter(childDivRight, "id", "rightDataColumn")
         JFET.addParameter(childDivRight, "className", "rightcolumn")
 
         return childDivRight
@@ -123,10 +123,11 @@ class FrontEndElementTool:
             FrontEndElementTool.createTd(childTr, j, prefix, tableMapping, inputMapping)
             j += 1
 
-    def createButtonRowButtons(buttonRow, values, prefix = "Sendbutton"):
+    def createButtonRowButtons(buttonRow, values, formId = "", onclick = False, prefix = "Sendbutton"):
         for value in reversed(values):
-            #button = FrontEndElementTool.createButtonRowButton(buttonRow, value)
-            button = FrontEndElementTool.createButton(buttonRow, value.lower() + prefix, value.lower() + prefix, "buttonRowItem", value)
+            tmp = None
+            if onclick: tmp = "doSubmit," + formId + "," + value.lower()
+            button = FrontEndElementTool.createButton(buttonRow, value.lower() + prefix, value.lower() + prefix, "decoratedButton buttonRowItem", value, tmp)
 
     def createButton(container, id, name, className, value, onclick = None):
         button = JFET.addChild(container, "input")
@@ -158,10 +159,17 @@ class FrontEndElementTool:
 
         return deviceUl
 
+    def createUl(container, id, className):
+        ul = JFET.addChild(container, "ul")
+        JFET.addParameter(ul, "id", id)
+        JFET.addParameter(ul, "className", className)
+
+        return ul
+
     def createDeviceRow(deviceUl, deviceState, deviceName):
         li = JFET.addChild(deviceUl, "li")
         deviceContainer = JFET.addChild(li, "div")
-        JFET.addParameter(deviceContainer, "className", "devicecontainerdiv")
+        JFET.addParameter(deviceContainer, "className", "liContainer")
 
         state = JFET.addChild(deviceContainer, "div")
         JFET.addParameter(state, "className", "devicestatediv")
@@ -172,29 +180,39 @@ class FrontEndElementTool:
         #JFET.addParameter(name, "innerHTML", deviceName)
         nameButton = JFET.addChild(name, "input")
         JFET.addParameter(nameButton, "type", "button")
-        JFET.addParameter(nameButton, "id", "deviceName")
-        JFET.addParameter(nameButton, "className", "devicenamebutton")
+        JFET.addParameter(nameButton, "id", deviceName)
+        JFET.addParameter(nameButton, "className", "decoratedButton")
         JFET.addParameter(nameButton, "value", deviceName)
 
         action = JFET.addChild(deviceContainer, "div")
-        JFET.addParameter(action, "className", "deviceactioncontainerdiv")
+        JFET.addParameter(action, "className", "right")
 
         # CHECK DEVICE TYPE TO SEE WHICH BUTTONS TO ADD!!!
-        FrontEndElementTool.createButton(action, "deviceOff", 205, "devicebutton", "Off")
-        FrontEndElementTool.createButton(action, "deviceOn", 204, "devicebutton", "On")
+        FrontEndElementTool.createButton(action, "deviceOff", 205, "decoratedButton", "Off")
+        FrontEndElementTool.createButton(action, "deviceOn", 204, "decoratedButton", "On")
+
+    def createSettingsRow(settingsUl, name, value, prefix):
+        li = JFET.addChild(settingsUl, "li")
+        settingsContainer = JFET.addChild(li, "div")
+        JFET.addParameter(settingsContainer, "className", "liContainer")
+
+        state = JFET.addChild(settingsContainer, "div")
+        JFET.addParameter(state, "className", "devicenamediv")
+        JFET.addParameter(state, "innerHTML", name)
+
+        settingValue = JFET.addChild(settingsContainer, "div")
+        JFET.addParameter(settingValue, "className", "right")
+        JFET.addParameter(settingValue, "innerHTML", str(value) + " " + prefix)
 
     def addScript(container, file):
         script = JFET.addChild(container, "script")
         JFET.addParameter(script, "src", "../scripts/" + file + ".js")
 
     def createSelectMap(select, map, selectedIndex):
-        i = 0
         for item in map:
             option = JFET.addChild(select, "option")
-            JFET.addParameter(option, "value", str(i))
-            JFET.addParameter(option, "innerHTML", item)
+            JFET.addParameter(option, "value", str(item[0]))
+            JFET.addParameter(option, "innerHTML", item[1])
 
-            if i is selectedIndex:
+            if item[0] == selectedIndex:
                 JFET.addParameter(option, "selected", "selected")
-
-            i += 1

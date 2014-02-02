@@ -23,6 +23,7 @@ from time import sleep
 from threading import Thread
 import json
 import Utils
+#from rauth import OAuth1Service
 from Constants import *
 
 class Connection:
@@ -36,11 +37,9 @@ class Connection:
         self.__name__ = "Connection"
         self.parent = parent
         self.running = True
-        
-        #self.clients = parent.configManager.getConf(CONFIG_CORE).getItem("clients", "")
-        #self.hostAddress = parent.configManager.getConf(CONFIG_SETTINGS).getItem("localip", "") # Your own home network address.
-        self.port = parent.configManager.getConf(CONFIG_SETTINGS).getItem("arduinoport", 48371)
-        self.listenPort = parent.configManager.getConf(CONFIG_SETTINGS).getItem("arduinolistenport", 48372)
+
+        self.port = parent.settingsManager.getValueByName("arduinoport")
+        self.listenPort = parent.settingsManager.getValueByName("arduinolistenport")
         
         #self.updateThread = Thread(target = self.listenArduinos).start()
         self.webserverThread = Thread(target = self.webserver).start()
@@ -76,7 +75,7 @@ class Connection:
                 sleep(0.01)
                 continue
                 
-            self.parent.logging.logMessage(response, client, request)
+            self.parent.logging.logMessage(response, self.parent.clientManager.getById(client), request)
             sleep(0.01)
     
     def webserver(self):
@@ -111,42 +110,9 @@ class Connection:
             try:
                 if request.startswith("{") and request.endswith("}"):
                     tmp = json.dumps(Utils.dispatchRequest(self.parent, json.loads(request)))
-                
-                if request == "getSensors":
-                    tmp = Utils.getSensors(self.parent)
 
-                elif request == "getDevices":
-                    tmp = Utils.getDevices(self.parent)
-                
-                elif request.startswith("controlDevice"):
-                    tmp = Utils.controlDevice(self.parent, request)
-                
-                elif request == "getSensorControl":
-                    tmp = Utils.getSensorControl(self.parent)
-                    
-                elif request.startswith("sensorControl"):
-                    tmp = Utils.sensorControl(self.parent, request)
-                    
-                elif request == "getTasks":
-                    tmp = Utils.getTasks(self.parent)
-                
-                elif request.startswith("task"):
-                    tmp = Utils.taskManagement(self.parent, request)
-                
-                elif request == "getEvents":
-                    tmp = Utils.getEventLog(self.parent)
-                
-                elif request.startswith("settings"):
-                    tmp = Utils.settings(self.parent, request)
-                    
-                elif request == "getIntervals":
-                    tmp = Utils.getIntervals(self.parent)
-                    
-                elif request.startswith("getFreeMemory"):
-                    tmp = Utils.getFreeMemory(self.parent, request)
-                    
                 if tmp is None:
-                    tmp = "Action returned NoneType"
+                    tmp = "{\"" + KEY_ERROR + ": \"Action returned NoneType\"}"
                 
             except Exception as e:
                 self.parent.logging.logEvent("Webserver handler encountered an exception while executing task: " + str(e), "red")
@@ -165,63 +131,58 @@ class Connection:
             conn.close()
             sleep(0.01)
     
-    def send(self, message, waitForResponse = True):
+    def send(self, document, waitForResponse = True):
         """
             Attempts to send a message to the Arduino.
         """
         
         self.parent.logging.logDebug(self.__name__ + "." + "send")
-        
-        s = None
-        response = ""
-        
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        except socket.error as e:
-            s = None
-            self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}'), message[0], json.loads(message[1]))
-            return json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}')
 
-        try:
-            s.settimeout(5)
-            s.connect((self.parent.clientManager.getById(message[0])["ip"], self.port))
-        except socket.error as e:
-            s.close()
+        client = self.parent.clientManager.getById(document["clientid"])
+        protocol = document["protocol"]
+
+        if client is None:
+            self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(CLIENT_DOESNT_EXIST_ERROR) + '}'), client, json.loads(document))
+            return json.loads('{"' + KEY_ERROR + '": ' + str(CLIENT_DOESNT_EXIST_ERROR) + '}')
+
+        if protocol == CLIENT_TYPE_ARDUINO:
+            message = json.dumps(document["message"])
             s = None
-            self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}'), message[0], json.loads(message[1]))
-            return json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}')
-        
-        try:
-            # aJson lib only supports strings up to length of 255 characters and memory deallocation will
-            # fail if we try to send longer strings than that, so prevent it.
-            #if len(message[1]) > MAX_MESSAGE_LENGTH:
-            #    self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(MESSAGE_TOO_LONG_ERROR) + '}'), message[0], json.loads(message[1]))
-            #    return json.loads('{"' + KEY_ERROR + '": ' + str(MESSAGE_TOO_LONG_ERROR) + '}')
-            
-            s.send((message[1] + "/").encode())
-        except:
-            s.close()
-            s = None
-            self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}'), message[0], json.loads(message[1]))
-            return json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}')
-        
-        # If user has defined it wants to get an answer from Arduino, wait fo the answer.
-        if waitForResponse:
+            response = ""
+
             try:
-                tmp = s.recv(4096).decode("UTF-8").strip()
-                
-                response = json.loads(tmp)
-                #response = json.loads(s.recv(4096).decode("UTF-8").strip())
-                self.parent.logging.logMessage(response, message[0], json.loads(message[1])) # Send automatically to logger, user doesn't need to bother with that.
-            except: #socket.timeout as e:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(5) # Arduino takes some time to respond, give it 5 seconds to process the request.
+                s.connect((client["ip"], self.port))
+                s.send((message + "/").encode())
+
+                # If user has defined it wants to get an answer from Arduino, wait fo the answer.
+                if waitForResponse:
+                    response = json.loads(s.recv(4096).decode("UTF-8").strip())
+                    self.parent.logging.logMessage(response, client, json.loads(message)) # Send automatically to logger, user doesn't need to bother with that.
+
+            except:
                 s.close()
                 s = None
-                self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}'), message[0], json.loads(message[1]))
+                self.parent.logging.logMessage(json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}'), client, json.loads(message))
                 return json.loads('{"' + KEY_ERROR + '": ' + str(NO_ARDUINO_RESPONSE) + '}')
-        
-        s.close()
-        s = None
-        return response
+
+            s.close()
+            s = None
+            return response
+
+        elif protocol == CLIENT_TYPE_TELLDUS:
+            self.telldusRequest(document["message"])
+
+    def telldusRequest(self, message):
+        method = message["method"]
+        params = message["params"]
+
+        #oauth = OAuth1Service() # TODO: Build the oauth session.
+
+        # TODO: Send the request
+        # TODO: Log the response (how should the response be sent to logging service? We are mostly concerned about device states and sensor readings.)
+        # TODO: When adding sensors and devices the values should be mapped to a NAS object. Things like ID of the Telldus object will be put to field "telldusid" and the "id" will be NAS ID.
 
     def getLocalIP(self):
         return [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]

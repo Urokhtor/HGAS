@@ -277,11 +277,9 @@ class TaskManager:
     
 class Task:
     
-    def __init__(self, name, type, action, port, priority, callBack = None, _isPermanent = True):
+    def __init__(self, name, action, priority, callBack = None, _isPermanent = True):
         self.name = name
-        self.type = type
         self.action = action
-        self.port = port
         self.priority = priority
         self.callBack = callBack
         self._isPermanent = _isPermanent
@@ -295,13 +293,6 @@ class Task:
         
         return self.name
     
-    def getType(self):
-        """
-            Which type the task is. Read, write, logging, sensorcontrol...
-        """
-        
-        return self.type
-    
     def getAction(self):
         """
             The action to be passed as a parameter to the callback function. It can be for example a protocol
@@ -309,15 +300,6 @@ class Task:
         """
         
         return self.action
-    
-    def getPort(self):
-        """
-            Port/index where the device lies that this task control. Set to 0 if task doesn't control any devices.
-            
-            Perhaps change this function's name for more consisten usage of device's physical location.
-        """
-        
-        return self.port
     
     def getPriority(self):
         """
@@ -333,7 +315,7 @@ class Task:
         """
         
         self.mutex.acquire()
-        if self.callBack != None:
+        if self.callBack is not None:
             try:
                 self.callBack(self.action)
             except Exception as e:
@@ -408,7 +390,7 @@ class Task:
         flag = True
         self.mutex.acquire()
         for time in self.scheduledEvents.keys():
-            if self.scheduledEvents[time] == False:
+            if self.scheduledEvents[time] is False:
                 flag = False
         
         self.mutex.release()
@@ -420,4 +402,28 @@ class Task:
         """
         
         return self.scheduledEvents[time]
-        
+
+    def scheduleByEvents(self, events):
+        for time in events:
+            try:
+                hour, minute = time.split(":")
+                if int(hour) > 23 or int(hour) < 0 or int(minute) > 60 or int(minute) < 0:
+                    self.parent.logging.logEvent("Task error: Scheduled time " + time + " is not valid in task " + self.name, "red")
+                    continue
+
+                else:
+                    taskTime = int(hour)*60*60 + int(minute)*60
+                    self.addScheduledEvent(taskTime)
+
+            except:
+                self.parent.logging.logEvent("Task error: Scheduled time " + time + " is not valid in task " + self.name, "red")
+                continue
+
+    def scheduleByInterval(self, interval):
+        time = 0
+        # UPDATE THESE TO USE A MANAGER
+        timeInterval = interval*60
+
+        while time < 86400:
+            self.addScheduledEvent(time)
+            time += timeInterval

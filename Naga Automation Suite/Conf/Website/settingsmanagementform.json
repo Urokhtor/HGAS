@@ -2,12 +2,12 @@
     "renderbrowser": true, 
     "source": {
         "child1": {
+            "element": "div", 
             "child1": {
                 "element": "div", 
                 "className": "listContainer", 
-                "id": "deviceContainer"
+                "id": "settingsContainer"
             }, 
-            "element": "div", 
             "childcount": 1, 
             "className": "container", 
             "id": "mainContainer"

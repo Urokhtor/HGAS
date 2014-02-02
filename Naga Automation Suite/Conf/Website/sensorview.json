@@ -1,8 +1,15 @@
 {
+    "renderbrowser": true, 
     "source": {
         "childcount": 1, 
         "child1": {
+            "id": "mainContainer", 
+            "element": "div", 
+            "className": "container", 
             "child1": {
+                "id": "leftButtonColumn", 
+                "element": "div", 
+                "className": "leftcolumn", 
                 "child1": {
                     "childcount": 1, 
                     "element": "div", 
@@ -12,17 +19,20 @@
                     }
                 }, 
                 "child2": {
+                    "id": "sensorUL", 
                     "element": "ul", 
-                    "className": "leftcolumnul", 
-                    "id": "sensorUL"
+                    "className": "leftcolumnul"
                 }, 
-                "id": "leftSensorColumn", 
-                "className": "leftcolumn", 
-                "childcount": 2, 
-                "element": "div"
+                "childcount": 2
             }, 
             "child2": {
+                "id": "rightDataColumn", 
+                "element": "div", 
+                "className": "rightcolumn", 
                 "child1": {
+                    "id": "sensorView", 
+                    "element": "div", 
+                    "className": "viewTable", 
                     "child1": {
                         "childcount": 1, 
                         "element": "table", 
@@ -46,81 +56,81 @@
                         "element": "table", 
                         "className": "fullWidth", 
                         "child1": {
+                            "id": "tableRows", 
+                            "element": "tbody", 
                             "child1": {
+                                "child4": {
+                                    "id": "sensorInfoType", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "element": "tr", 
                                 "child1": {
                                     "innerHTML": "Name", 
                                     "element": "td", 
                                     "className": "labelCell"
                                 }, 
                                 "child2": {
+                                    "id": "sensorInfoName", 
                                     "element": "td", 
-                                    "className": "dataCell", 
-                                    "id": "sensorInfoName"
+                                    "className": "dataCell"
                                 }, 
                                 "child3": {
                                     "innerHTML": "Type", 
                                     "element": "td", 
                                     "className": "labelCell"
                                 }, 
-                                "child4": {
-                                    "element": "td", 
-                                    "className": "dataCell", 
-                                    "id": "sensorInfoType"
-                                }, 
-                                "childcount": 4, 
-                                "element": "tr"
+                                "childcount": 4
                             }, 
                             "child2": {
+                                "child4": {
+                                    "id": "sensorInfoIndex", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "element": "tr", 
                                 "child1": {
                                     "innerHTML": "Client", 
                                     "element": "td", 
                                     "className": "labelCell"
                                 }, 
                                 "child2": {
+                                    "id": "sensorInfoClient", 
                                     "element": "td", 
-                                    "className": "dataCell", 
-                                    "id": "sensorInfoClient"
+                                    "className": "dataCell"
                                 }, 
                                 "child3": {
                                     "innerHTML": "Index", 
                                     "element": "td", 
                                     "className": "labelCell"
                                 }, 
-                                "child4": {
-                                    "element": "td", 
-                                    "className": "dataCell", 
-                                    "id": "sensorInfoIndex"
-                                }, 
-                                "childcount": 4, 
-                                "element": "tr"
+                                "childcount": 4
                             }, 
                             "child3": {
+                                "child4": {
+                                    "id": "sensorInfoLastUpdate", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "element": "tr", 
                                 "child1": {
                                     "innerHTML": "Last reading", 
                                     "element": "td", 
                                     "className": "labelCell"
                                 }, 
                                 "child2": {
+                                    "id": "sensorInfoLastReading", 
                                     "element": "td", 
-                                    "className": "dataCell", 
-                                    "id": "sensorInfoLastReading"
+                                    "className": "dataCell"
                                 }, 
                                 "child3": {
                                     "innerHTML": "Last update", 
                                     "element": "td", 
                                     "className": "labelCell"
                                 }, 
-                                "child4": {
-                                    "element": "td", 
-                                    "className": "dataCell", 
-                                    "id": "sensorInfoLastUpdate"
-                                }, 
-                                "childcount": 4, 
-                                "element": "tr"
+                                "childcount": 4
                             }, 
-                            "id": "tableRows", 
-                            "childcount": 3, 
-                            "element": "tbody"
+                            "childcount": 3
                         }
                     }, 
                     "child3": {
@@ -128,43 +138,33 @@
                         "element": "table", 
                         "className": "fullWidth", 
                         "child1": {
-                            "childcount": 1, 
-                            "child1": {
-                                "type": "button", 
-                                "name": "modifySensor", 
-                                "id": "modifySensor", 
-                                "className": "buttonRowItem", 
-                                "value": "Modify", 
-                                "element": "input"
-                            }, 
+                            "id": "buttonRow", 
                             "element": "div", 
                             "className": "buttonRow", 
-                            "id": "buttonRow"
+                            "child1": {
+                                "type": "button", 
+                                "id": "modifySensor", 
+                                "element": "input", 
+                                "className": "decoratedButton buttonRowItem", 
+                                "name": "modifySensor", 
+                                "value": "Modify"
+                            }, 
+                            "childcount": 1
                         }
                     }, 
-                    "id": "sensorView", 
-                    "className": "viewTable", 
-                    "childcount": 3, 
-                    "element": "div"
+                    "childcount": 3
                 }, 
                 "child2": {
                     "childcount": 1, 
                     "element": "table", 
                     "child1": {
-                        "element": "div", 
-                        "id": "sensorPlotsHolder"
+                        "id": "sensorPlotsHolder", 
+                        "element": "div"
                     }
                 }, 
-                "id": "rightSensorColumn", 
-                "className": "rightcolumn", 
-                "childcount": 2, 
-                "element": "div"
+                "childcount": 2
             }, 
-            "id": "mainContainer", 
-            "className": "container", 
-            "childcount": 2, 
-            "element": "div"
+            "childcount": 2
         }
-    }, 
-    "renderbrowser": true
+    }
 }

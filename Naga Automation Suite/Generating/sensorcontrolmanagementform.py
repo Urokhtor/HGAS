@@ -1,7 +1,7 @@
 __author__ = 'Urokhtor'
 
-import sys
-sys.path.append("G:\\Programming\Python\\Naga-Automation-Suite\\Naga Automation Suite")
+import sys, os
+sys.path.append(os.getcwd())
 
 from Tools.JSONFrontEndTool import JSONFrontEndTool as JFET
 from Tools.FrontEndElementTool import FrontEndElementTool as FEET

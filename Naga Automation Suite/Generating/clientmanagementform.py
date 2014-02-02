@@ -9,21 +9,23 @@ import json
 
 tmp = FEET.createSource()
 tmp["source"] = {}
-tableMapping = ["Name", "Type", "Client", "Index"]
-inputMapping = [{"element": "input", "type": "text"}, {"element": "select"}, {"element": "select"}, {"element": "input", "type": "text"}]
+tableMapping = ["Name", "Type", "Address", ""]
+inputMapping = [{"element": "input", "type": "text"},
+                {"element": "select"},
+                {"element": "input", "type": "text"}]
 
 mainContainer = FEET.createMainContainer(tmp["source"])
-form = FEET.createForm(mainContainer, "devicemanagementForm")
-viewTable = FEET.createViewTable(form, "Device management:")
+form = FEET.createForm(mainContainer, "clientmanagementForm")
+viewTable = FEET.createViewTable(form, "Client management:")
 childTbody = JFET.findElementById(viewTable, "tableRows")
-hiddenInput = FEET.createHiddenInput(childTbody, "deviceId", "deviceId")
+hiddenInput = FEET.createHiddenInput(childTbody, "clientId", "clientId")
 
-FEET.fillViewTable(childTbody, "device", tableMapping, inputMapping)
+FEET.fillViewTable(childTbody, "client", tableMapping, inputMapping)
 
 buttonRow = JFET.findElementById(viewTable, "buttonRow")
 buttons = ["Save", "Remove"]
 FEET.createButtonRowButtons(buttonRow, buttons, form["id"], True)
 
-f = open("Conf/Website/devicemanagementform.json", "w+")
+f = open("Conf/Website/clientmanagementform.json", "w+")
 json.dump(tmp, f, indent = 4)
 f.close()

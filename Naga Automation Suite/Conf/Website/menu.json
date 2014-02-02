@@ -2,7 +2,7 @@
     "renderbrowser": true, 
     "source": {
         "element": "body", 
-        "childcount": 4, 
+        "childcount": 5,
         "child1": {
             "condition": "renderheader", 
             "element": "div", 
@@ -51,8 +51,13 @@
                 "id": "mainContainer", 
                 "className": "container"
             }
-        }, 
+        },
         "child4": {
+            "element": "div",
+            "id": "notificationContainer",
+            "className": "notification-box"
+        },
+        "child5": {
             "element": "div", 
             "className": "footer"
         }

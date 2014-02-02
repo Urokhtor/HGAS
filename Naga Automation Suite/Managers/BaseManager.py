@@ -2,24 +2,34 @@ from Constants import CONFIG_SETTINGS, CONFIG_CORE
 
 class BaseManager:
     
-    def __init__(self, parent):
+    def __init__(self, parent, conf, item):
         self.parent = parent
+        self.conf = conf
+        self.item = item
     
     def getNextId(self):
-        currentId = self.parent.configManager.getConf(CONFIG_SETTINGS).getItem("idsequence", None)
-        nextId = currentId + 1
-        self.parent.configManager.getConf(CONFIG_SETTINGS).setItem("idsequence", nextId)
+        currentId = self.parent.settingsManager.getByName("idsequence")
+        nextId = currentId["value"] + 1
+        currentId["value"] = nextId
+        self.parent.settingsManager.setByName("idsequence", nextId)
         return nextId
     
-    def create(self):
+    def create(self, *args):
         raise NotImplementedError("Create was not implemented by a class inheriting from BaseManager")
 
-    def _getById(self, _item, id):
+    def getAll(self):
         """
 
         """
 
-        items = self.parent.configManager.getConf(CONFIG_CORE).getItem(_item, None)
+        return self.parent.configManager.getConf(self.conf).getItem(self.item, None)
+
+    def getById(self, id):
+        """
+
+        """
+
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
 
         if not id is None:
             for item in items:
@@ -28,12 +38,12 @@ class BaseManager:
 
         return None
 
-    def _getByName(self, _item, name):
+    def getByName(self, name):
         """
 
         """
 
-        items = self.parent.configManager.getConf(CONFIG_CORE).getItem(_item, None)
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
 
         if not name is None:
             for item in items:
@@ -42,12 +52,12 @@ class BaseManager:
 
         return None
 
-    def _getAllFromField(self, _item, field):
+    def getAllFromField(self, field):
         """
             Gets all values from given field.
         """
 
-        items = self.parent.configManager.getConf(CONFIG_CORE).getItem(_item, None)
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
         list = []
 
         if not field is None:
@@ -57,12 +67,48 @@ class BaseManager:
 
         return list
 
-    def _has(self, _item, id):
+    def getIdNameMap(self):
+        """
+            Returns a tuple mapping of id and name.
+        """
+
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
+        list = []
+
+        for item in items:
+            if "name" in item and "id" in item:
+                list.append((item["id"], item["name"]))
+
+        return list
+
+    def add(self, item):
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
+
+        if items is None: return False
+
+        items.append(item)
+        self.parent.configManager.getConf(self.conf).setItem(self.item, items)
+        return True
+
+    def set(self, item):
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
+
+        if items is None: return False
+
+        for _item in items:
+            if _item["id"] == item["id"]:
+                _item = item
+                self.parent.configManager.getConf(self.conf).setItem(self.item, items)
+                return True
+
+        return False
+
+    def has(self, id):
         """
 
         """
 
-        items = self.parent.configManager.getConf(CONFIG_CORE).getItem(_item, None)
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
 
         if items is None: return False
 
@@ -72,11 +118,29 @@ class BaseManager:
 
         return False
 
-    def _hasByName(self, _item, name):
-        items = self.parent.configManager.getConf(CONFIG_CORE).getItem(_item, None)
+    def hasByName(self, name):
+        items = self.parent.configManager.getConf(self.conf).getItem(self.item, None)
 
         for item in items:
             if item["name"] == name:
                 return True
 
         return False
+
+    def equals(self, name, value):
+        """
+            Takes name of the item and the wanted value and checks if the item's current value matches with the
+            wanted value.
+        """
+
+        if self.hasByName(name):
+            if self.getByName(name) == value:
+                return True
+
+        return False
+
+    def remove(self, item):
+        raise NotImplementedError("Remove was not implemented by a class inheriting from BaseManager")
+
+    def removeById(self, id):
+        return self.remove(self.getById(id))

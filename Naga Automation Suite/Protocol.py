@@ -26,58 +26,118 @@ class Protocol:
         This class composes messages that are compliant to the communication protocol that
         Arduino code understands.
     """
-        
-    def readSensor(self, id, index):
+
+    def __init__(self, parent):
+        self.parent = parent
+
+    def createHeader(self, object, message):
+        # get clientid and client type
+        document = {}
+        document["message"] = message
+
+        if object is not None:
+            client = self.parent.clientManager.getById(object["clientid"])
+            document["protocol"] = client["type"]
+            document["clientid"] = client["id"]
+
+        return document
+
+    def readSensor(self, sensor):
         """
             Tell Arduino to get sensor's reading and send it back to the server.
         """
         
-        tmp = {}
+        message = {}
+        client = self.parent.clientManager.getById(sensor["clientid"])
+
+        if client is None: return None # Return some error
+
+        if client["type"] == CLIENT_TYPE_ARDUINO:
+            message[KEY_COMMAND] = SEND_READ
+            message[KEY_ID] = sensor["id"]
+            message[KEY_INDEX] = sensor["index"]
+
+        elif client["type"] == CLIENT_TYPE_TELLDUS:
+            message["method"] = "sensor/info"
+            message["params"] = {"id": sensor["telldusid"]}
         
-        tmp[KEY_COMMAND] = SEND_READ
-        tmp[KEY_ID] = id
-        tmp[KEY_INDEX] = index
-        
-        return json.dumps(tmp)
+        return self.createHeader(sensor, message)
     
-    def write(self, id, index):
+    def write(self, device):
         """
             Toggle device state. Not for sensors.
         """
         
-        tmp = {}
+        message = {}
+        client = self.parent.clientManager.getById(device["clientid"])
+
+        if client is None: return None # Return some error
+
+        if client["type"] == CLIENT_TYPE_ARDUINO:
+            message[KEY_COMMAND] = SEND_WRITE
+            message[KEY_ID] = device["id"]
+            message[KEY_INDEX] = device["index"]
+
+        elif client["type"] == CLIENT_TYPE_TELLDUS:
+            if device["state"] == DEVICE_STATE_OFF: message["method"] = "device/turnOn"
+            else: message["method"] = "device/turnOff"
+            message["params"] = {"id": device["telldusid"]}
         
-        tmp[KEY_COMMAND] = SEND_WRITE
-        tmp[KEY_ID] = id
-        tmp[KEY_INDEX] = index
+        return self.createHeader(device, message)
         
-        return json.dumps(tmp)
-        
-    def writeEnable(self, id, index):
+    def writeEnable(self, device):
         """
             Enable a device at index. Not for sensors. NOT SUPPORTED YET!
         """
         
-        tmp = {}
+        message = {}
+        client = self.parent.clientManager.getById(device["clientid"])
+
+        if client is None: return None # Return some error
+
+        if client["type"] == CLIENT_TYPE_ARDUINO:
+            message[KEY_COMMAND] = SEND_ENABLE
+            message[KEY_ID] = device["id"]
+            message[KEY_INDEX] = device["index"]
+
+        elif client["type"] == CLIENT_TYPE_TELLDUS:
+            message["method"] = "device/turnOn"
+            message["params"] = {"id": device["telldusid"]}
         
-        tmp[KEY_COMMAND] = SEND_ENABLE
-        tmp[KEY_ID] = id
-        tmp[KEY_INDEX] = index
-        
-        return json.dumps(tmp)
+        return self.createHeader(device, message)
     
-    def writeDisable(self, id, index):
+    def writeDisable(self, device):
         """
             Disable a device at index. Not for sensors. NOT SUPPORTED YET!
         """
         
-        tmp = {}
+        message = {}
+        client = self.parent.clientManager.getById(device["clientid"])
+
+        if client is None: return None # Return some error
+
+        if client["type"] == CLIENT_TYPE_ARDUINO:
+            message[KEY_COMMAND] = SEND_DISABLE
+            message[KEY_ID] = device["id"]
+            message[KEY_INDEX] = device["index"]
+
+        elif client["type"] == CLIENT_TYPE_TELLDUS:
+            message["method"] = "device/turnOff"
+            message["params"] = {"id": device["telldusid"]}
         
-        tmp[KEY_COMMAND] = SEND_DISABLE
-        tmp[KEY_ID] = id
-        tmp[KEY_INDEX] = index
-        
-        return json.dumps(tmp)
+        return self.createHeader(device, message)
+
+    def writeDim(self, device, value):
+
+        message = {}
+        client = self.parent.clientManager.getById(device["clientid"])
+
+        if client is None: return None # Return some error
+        message["method"] = "device/dim"
+        message["params"] = {"id": device["telldusid"], "level": value}
+
+        return self.createHeader(device, message)
+
         
     def insert(self, device, type, isStartup = False):
         """
@@ -87,16 +147,16 @@ class Protocol:
         if not type == TYPE_SENSOR and not type == TYPE_PUMP:
             return json.dumps('{"' + KEY_ERROR + '": ' + str(WRONG_TYPE_ERROR) + '}')
         
-        tmp = {}
+        message = {}
         
-        tmp[KEY_COMMAND] = SEND_INSERT
-        tmp[KEY_DEVICE_TYPE] = type
-        tmp[KEY_IS_STARTUP] = isStartup
+        message[KEY_COMMAND] = SEND_INSERT
+        message[KEY_DEVICE_TYPE] = type
+        message[KEY_IS_STARTUP] = isStartup
         
-        if type == TYPE_SENSOR: self.parseSensor(tmp, device)
-        elif type == TYPE_PUMP: self.parseDevice(tmp, device)
+        if type == TYPE_SENSOR: self.parseSensor(message, device)
+        elif type == TYPE_PUMP: self.parseDevice(message, device)
         
-        return json.dumps(tmp)
+        return self.createHeader(device, message)
 
     def remove(self, device, type):
         """
@@ -106,43 +166,92 @@ class Protocol:
         if not type == TYPE_SENSOR and not type == TYPE_PUMP:
             return json.dumps('{"' + KEY_ERROR + '": ' + str(WRONG_TYPE_ERROR) + '}')
         
-        tmp = {}
+        message = {}
         
-        tmp[KEY_COMMAND] = SEND_REMOVE
-        tmp[KEY_DEVICE_TYPE] = type
+        message[KEY_COMMAND] = SEND_REMOVE
+        message[KEY_DEVICE_TYPE] = type
         
-        if type == TYPE_SENSOR: self.parseSensor(tmp, device)
-        elif type == TYPE_PUMP: self.parseDevice(tmp, device)
+        if type == TYPE_SENSOR: self.parseSensor(message, device)
+        elif type == TYPE_PUMP: self.parseDevice(message, device)
         
-        return json.dumps(tmp)
-    
-    def freeMemory(self):
-        """
-        
-        """
-        
-        tmp = {}
-        
-        tmp[KEY_COMMAND] = SEND_FREEMEMORY
-        
-        return json.dumps(tmp)
+        return self.createHeader(device, message)
 
-    def parseSensor(self, tmp, sensor):
-        tmp[KEY_ID] = sensor["id"]
-        tmp[KEY_INDEX] = sensor["index"]
-        tmp[KEY_TYPE] = sensor["type"]
+    def parseSensor(self, message, sensor):
+        message[KEY_ID] = sensor["id"]
+        message[KEY_INDEX] = sensor["index"]
+        message[KEY_TYPE] = sensor["type"]
         
-        if not "lowthreshold" in sensor: tmp[KEY_LOW_THRESHOLD] = -1024
-        else: tmp[KEY_LOW_THRESHOLD] = sensor["lowthreshold"]
+        if not "lowthreshold" in sensor: message[KEY_LOW_THRESHOLD] = -1024
+        else: message[KEY_LOW_THRESHOLD] = sensor["lowthreshold"]
         
-        if not "highthreshold" in sensor: tmp[KEY_HIGH_THRESHOLD] = -1024
-        else: tmp[KEY_HIGH_THRESHOLD] = sensor["highthreshold"]
+        if not "highthreshold" in sensor: message[KEY_HIGH_THRESHOLD] = -1024
+        else: message[KEY_HIGH_THRESHOLD] = sensor["highthreshold"]
         
         
-    def parseDevice(self, tmp, device):
-        tmp[KEY_ID] = device["id"]
-        tmp[KEY_INDEX] = device["index"]
-        tmp[KEY_MAX_ON_TIME] = device["maxontime"]
-        tmp[KEY_USES_HYGROMETER] = device["useshygrometer"]
-        tmp[KEY_HYGROMETER_INDEX] = device["hygrometerindex"]
-    
+    def parseDevice(self, message, device):
+        message[KEY_ID] = device["id"]
+        message[KEY_INDEX] = device["index"]
+        message[KEY_MAX_ON_TIME] = device["maxontime"]
+        message[KEY_USES_HYGROMETER] = device["useshygrometer"]
+        message[KEY_HYGROMETER_INDEX] = device["hygrometerindex"]
+
+    def getSensor(self, sensor):
+        """
+            This method creates message for getting latest device information for the Telldus device with given ID.
+        """
+
+        message = {}
+        client = self.parent.clientManager.getById(sensor["clientid"])
+
+        if client is None: return None # Return some error
+
+        message["method"] = "sensor/info"
+        message["params"] = {"id": sensor["telldusid"]}
+
+        return self.createHeader(sensor, message)
+
+    def getSensors(self, sensor):
+        """
+            This method creates message for getting latest device information for the Telldus device with given ID.
+        """
+
+        message = {}
+        client = self.parent.clientManager.getById(sensor["clientid"])
+
+        if client is None: return None # Return some error
+
+        message["method"] = "sensors/list"
+        message["params"] = ""
+
+        return self.createHeader(sensor, message)
+
+    def getDevice(self, device, methods = 3):
+        """
+            This method creates message for getting latest device information for the Telldus device with given ID.
+        """
+
+        message = {}
+        client = self.parent.clientManager.getById(device["clientid"])
+
+        if client is None: return None # Return some error
+
+        message["method"] = "device/info"
+        message["params"] = {"id": device["telldusid"], "supportedMethods": methods} # TODO: Is methods needed?
+
+        return self.createHeader(device, message)
+
+    def getDevices(self, device):
+        """
+            This method creates message for getting latest device information for the Telldus device with given ID.
+        """
+
+        message = {}
+        client = self.parent.clientManager.getById(device["clientid"])
+
+        if client is None: return None # Return some error
+
+        message["method"] = "devices/list"
+        message["params"] = {"supportedMethods": 16} # TODO: Make this better.
+
+        return self.createHeader(device, message)
+

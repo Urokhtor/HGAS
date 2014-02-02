@@ -47,7 +47,7 @@ class requestHandler(BaseHTTPRequestHandler):
 
     # Get the LAN IP of the machine we're running on.
     localip = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1][0]
-
+    print(localip)
     def do_HEAD(self):
         """
             Ask the user to authenticate before access is granted.

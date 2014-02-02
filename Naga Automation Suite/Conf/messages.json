@@ -1,0 +1,44 @@
+{
+    "messages": [
+        {
+            "name": "setting.arduinolistenport", 
+            "value": "Port which listens to messages from Arduino clients."
+        }, 
+        {
+            "name": "setting.arduinoport", 
+            "value": "Port which Arduino(s) listen to."
+        }, 
+        {
+            "name": "setting.logginginterval", 
+            "value": "How many minutes are between sensor data loggings."
+        }, 
+        {
+            "name": "setting.sensorcontrolinterval", 
+            "value": "How many minutes are between sensorcontrol checks."
+        }, 
+        {
+            "name": "setting.eventloglength", 
+            "value": "How many lines does eventlog return."
+        }, 
+        {
+            "name": "setting.dailyplotinterval", 
+            "value": "How many minutes are between daily plot generating."
+        }, 
+        {
+            "name": "setting.weeklyplotinterval", 
+            "value": "How many minutes are between weekly plot generating."
+        }, 
+        {
+            "name": "setting.listenport", 
+            "value": "Which port is used to access this site. (Restart is required)"
+        }, 
+        {
+            "name": "sensor.added", 
+            "value": "Sensor was added successfully"
+        }, 
+        {
+            "name": "sensor.removed", 
+            "value": "Sensor was removed successfully"
+        }
+    ]
+}

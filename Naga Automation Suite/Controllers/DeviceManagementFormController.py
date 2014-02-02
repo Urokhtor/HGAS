@@ -18,7 +18,7 @@ class DeviceManagementFormController(FormController):
         tmp = json.load(f)
         f.close()
 
-        devices = parent.deviceManager.getDevices()
+        devices = parent.deviceManager.getAll()
 
         if devices is None: return json.dumps(tmp)
 
@@ -27,7 +27,7 @@ class DeviceManagementFormController(FormController):
         clientValue = None
 
         if "params" in request and "id" in request["params"]:
-            device = parent.deviceManager.getDeviceById(int(request["params"]["id"]))
+            device = parent.deviceManager.getById(int(request["params"]["id"]))
 
         if device:
             # Add the chosen sensor's data to the sensor info table.
@@ -37,6 +37,9 @@ class DeviceManagementFormController(FormController):
             JFET.addParameter(JFET.findElementById(tmp["source"], "deviceIndex"), "value", device["index"])
             deviceId = JFET.findElementById(tmp["source"], "deviceId")
             JFET.addParameter(deviceId, "value", str(device["id"]))
+
+        else:
+            JFET.addParameter(JFET.findElementById(tmp["source"], "removeSendbutton"), "disabled", "true")
 
         deviceType = JFET.findElementById(tmp["source"], "deviceType")
         map = TypeMapper.getDeviceTypeMap()
@@ -50,7 +53,7 @@ class DeviceManagementFormController(FormController):
         if client is not None:
             clientName = client["name"]
 
-        FEET.createSelectMap(deviceClient, parent.clientManager.getAllFromField("name"), clientName)
+        FEET.createSelectMap(deviceClient, parent.clientManager.getIdNameMap(), clientName) # It now uses name for the ID. Perhaps we should use the real ID?
 
         return json.dumps(tmp)
 

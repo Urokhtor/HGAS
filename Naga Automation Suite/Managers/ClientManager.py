@@ -1,7 +1,12 @@
+__author__ = 'Urokhtor'
+
 from Managers.BaseManager import BaseManager
-from Constants import CONFIG_CORE
+from Constants import *
 
 class ClientManager(BaseManager):
+
+    def __init__(self, parent):
+        BaseManager.__init__(self, parent, CONFIG_CORE, "clients")
 
     def create(self, name, type, ip):
         """
@@ -17,43 +22,15 @@ class ClientManager(BaseManager):
         return client
 
     def insert(self, client):
-        clients = self.parent.configManager.getConf(CONFIG_CORE).getItem("clients", None)
-        clients.append(client)
+        self.add(client)
+        return '{"' + KEY_RESPONSE + '": ' + str(INSERT_CLIENT_SUCCESS) + '}'
+
+    def remove(self, client):
+        if not self.has(client["id"]):
+            return '{"' + KEY_ERROR + '": ' + str(CLIENT_DOESNT_EXIST_ERROR) + '}'
+
+        clients = self.getAll()
+        clients.remove(client)
         self.parent.configManager.getConf(CONFIG_CORE).setItem("clients", clients)
 
-        # RETURN RESPONSE
-
-    def getById(self, id):
-        """
-
-        """
-
-        return self._getById("clients", id)
-
-    def getByName(self, name):
-        """
-
-        """
-
-        return self._getByName("clients", name)
-
-    def getAllFromField(self, field):
-        """
-
-        """
-
-        return self._getAllFromField("clients", field)
-
-    def has(self, id):
-        """
-
-        """
-
-        return self._has("clients", id)
-
-    def hasByName(self, name):
-        """
-
-        """
-
-        return self._hasByName("clients", name)
+        return '{"' + KEY_RESPONSE + '": ' + str(REMOVE_CLIENT_SUCCESS) + '}'

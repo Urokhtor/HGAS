@@ -1,7 +1,7 @@
 __author__ = 'Urokhtor'
 
-import sys
-sys.path.append("G:\\Programming\Python\\Naga-Automation-Suite\\Naga Automation Suite")
+import sys, os
+sys.path.append(os.getcwd())
 
 from Tools.JSONFrontEndTool import JSONFrontEndTool as JFET
 from Tools.FrontEndElementTool import FrontEndElementTool as FEET
@@ -22,7 +22,7 @@ FEET.fillViewTable(childTbody, "sensor", tableMapping, inputMapping)
 
 buttonRow = JFET.findElementById(viewTable, "buttonRow")
 buttons = ["Save", "Remove"]
-FEET.createButtonRowButtons(buttonRow, buttons)
+FEET.createButtonRowButtons(buttonRow, buttons, form["id"], True)
 
 f = open("Conf/Website/sensormanagementform.json", "w+")
 json.dump(tmp, f, indent = 4)

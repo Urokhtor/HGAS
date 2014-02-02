@@ -1,0 +1,162 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "child1": {
+            "id": "mainContainer", 
+            "child2": {
+                "child1": {
+                    "id": "taskView", 
+                    "child2": {
+                        "child1": {
+                            "id": "tableRows", 
+                            "child2": {
+                                "element": "tr", 
+                                "child2": {
+                                    "id": "taskAction", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Events"
+                                }, 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Action"
+                                }, 
+                                "child4": {
+                                    "id": "taskEvents", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child3": {
+                                "element": "tr", 
+                                "child2": {
+                                    "id": "taskIsPermanent", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": ""
+                                }, 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Is permanent"
+                                }, 
+                                "child4": {
+                                    "id": "task", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "child1": {
+                                "element": "tr", 
+                                "child2": {
+                                    "id": "taskName", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Device"
+                                }, 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Name"
+                                }, 
+                                "child4": {
+                                    "id": "taskDevice", 
+                                    "element": "td", 
+                                    "className": "dataCell"
+                                }, 
+                                "childcount": 4
+                            }, 
+                            "element": "tbody", 
+                            "childcount": 3
+                        }, 
+                        "element": "table", 
+                        "className": "fullWidth", 
+                        "childcount": 1
+                    }, 
+                    "child3": {
+                        "child1": {
+                            "child1": {
+                                "id": "modifyTask", 
+                                "name": "modifyTask", 
+                                "type": "button", 
+                                "element": "input", 
+                                "className": "decoratedButton buttonRowItem", 
+                                "value": "Modify"
+                            }, 
+                            "id": "buttonRow", 
+                            "element": "div", 
+                            "className": "buttonRow", 
+                            "childcount": 1
+                        }, 
+                        "element": "table", 
+                        "className": "fullWidth", 
+                        "childcount": 1
+                    }, 
+                    "child1": {
+                        "child1": {
+                            "child1": {
+                                "child1": {
+                                    "element": "th", 
+                                    "className": "headCell", 
+                                    "innerHTML": "Task info:"
+                                }, 
+                                "element": "tr", 
+                                "childcount": 1
+                            }, 
+                            "element": "thead", 
+                            "childcount": 1
+                        }, 
+                        "element": "table", 
+                        "className": "fullWidth", 
+                        "childcount": 1
+                    }, 
+                    "className": "viewTable", 
+                    "element": "div", 
+                    "childcount": 3
+                }, 
+                "id": "rightDataColumn", 
+                "element": "div", 
+                "className": "rightcolumn", 
+                "childcount": 1
+            }, 
+            "child1": {
+                "id": "leftButtonColumn", 
+                "child2": {
+                    "id": "taskUL", 
+                    "element": "ul", 
+                    "className": "leftcolumnul"
+                }, 
+                "child1": {
+                    "child1": {
+                        "element": "h3", 
+                        "innerHTML": "Select task:"
+                    }, 
+                    "element": "div", 
+                    "childcount": 1
+                }, 
+                "className": "leftcolumn", 
+                "element": "div", 
+                "childcount": 2
+            }, 
+            "className": "container", 
+            "element": "div", 
+            "childcount": 2
+        }, 
+        "childcount": 1
+    }
+}

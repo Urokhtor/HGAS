@@ -24,17 +24,18 @@ from Scheduler import Scheduler
 from Logging import Logging
 from Managers.ConfigurationManager import ConfigurationManager
 from Managers.ModuleManager import ModuleManager
+from Managers.SensorManager import SensorManager
 from Managers.DeviceManager import DeviceManager
 from Managers.TaskManager import TaskManager
 from Managers.SettingsManager import SettingsManager
+from Managers.MessageManager import MessageManager
 from Managers.ClientManager import ClientManager
 from HTTPServer import WebServer
 from Startup import Startup
-#from Plot import Plot
 from Constants import *
 
 from time import sleep
-import sys
+import sys, json
 
 class Core:
     """
@@ -48,34 +49,42 @@ class Core:
         
         # These return True of False depending on whether loading the conf was a success.
         # It should be checked if the conf was loaded successfully and failures should be logged.
-        self.configManager.loadConf(CONFIG_CORE)
-        self.configManager.loadConf(CONFIG_SETTINGS)
-        self.configManager.loadConf(CONFIG_FORMS)
-        self.configManager.loadConf(CONFIG_URLMAP)
+        self.configManager.loadConf(CONFIG_CORE, True)
+        self.configManager.loadConf(CONFIG_SETTINGS, True)
+        self.configManager.loadConf(CONFIG_FORMS, True)
+        self.configManager.loadConf(CONFIG_URLMAP, True)
+        self.configManager.loadConf(CONFIG_MESSAGES, True)
         
         self.moduleManager = ModuleManager(self)
+        self.settingsManager = SettingsManager(self)
         self.clientManager = ClientManager(self)
+        self.sensorManager = SensorManager(self)
         self.deviceManager = DeviceManager(self)
         self.taskManager = TaskManager(self)
-        self.settingsManager = SettingsManager(self)
+        self.messageManager = MessageManager(self)
         self.logging = Logging(self)
-        #self.plot = Plot(self)
-        self.protocol = Protocol()
+
+        if self.settingsManager.equals("plottype", "matplotlib"):
+            from Plot import Plot
+            self.plot = Plot(self)
+
+        self.protocol = Protocol(self)
         if not justPlots: self.connection = Connection(self)
         if not justPlots: self.scheduler = Scheduler()
-        if not justPlots: self.webServer = WebServer(self.configManager.getConf(CONFIG_SETTINGS).getItem("localip", ""), self.configManager.getConf(CONFIG_SETTINGS).getItem("listenport", 8080))
+        if not justPlots: self.webServer = WebServer(self.connection.getLocalIP(), self.settingsManager.getValueByName("listenport")) # Currently binds to localhost. But this needs to be fixed so other connections can be listened to too.
 
     def initialize(self):
         self.logging.logDebug(self.__name__ + "." + "initialize")
         self.scheduler.initialize()
         
         startup = Startup(self)
+        startup.addSensors()
         startup.addDevices()
         #startup.addTasks()
         #startup.addSensorLogging()
         #startup.addDailyPlots()
         #startup.addWeeklyPlots()
-        startup.addSensorControl()
+        #startup.addSensorControl()
 
         #modules = []
 
@@ -106,15 +115,21 @@ def main():
     print("under certain conditions; for more details visit the GPL")
     print("terms and conditions at <http://www.gnu.org/licenses/gpl.html>")
     print("")
-    
+
     if len(sys.argv) == 1:
+        # Check if auth exists, if not, add a new one.
+        f = open(".passwd.json", "r")
+        tmp = f.readlines()
+
+        if len(tmp) is 0 or "auth" not in json.loads("".join(tmp)):
+            addUser()
+
         try:
             server = Core()
             server.initialize()
-        
+
+            # We actually don't even go here because of the HTTP server.
             while 1:
-                tmp = input("")
-                print("You gave: " + tmp)
                 sleep(0.1)
 
         except KeyboardInterrupt as e:
@@ -124,32 +139,9 @@ def main():
         #except Exception as e:
 
     # Adds an encrypted user and password pair.
-    elif sys.argv[1] == "user":
-        if len(sys.argv) != 4:
-            print("An invalid number of arguments was passed. Syntax = python Core.py user [username] [password]")
-            from os import _exit
-            _exit(0)
+    elif sys.argv[1] == "set" and sys.argv[2] == "user":
+        addUser()
 
-        from base64 import b64encode
-        b64encoded = b64encode((sys.argv[2] + ":" + sys.argv[3]).encode("UTF-8", "replace"))
-        
-        from hashlib import sha512
-        m = sha512()
-        m.update(b64encoded)
-        hashedString = m.digest()
-        
-        import json
-        f = open(".passwd.json", "r")
-        tmp = json.load(f)
-        f.close()
-        
-        tmp["auth"] = hashedString.decode("UTF-8", "replace")
-            
-        f = open(".passwd.json", "w")
-        json.dump(tmp, f, indent = 4)
-        f.close()
-        print("Added auth")
-    
     # Start the server for plot generation, generate them and exit.
     elif sys.argv[1] == "plot":
         server = Core(True)
@@ -166,7 +158,26 @@ def main():
         
         from os import _exit
         _exit(0)
-    
+
+def addUser():
+    user = input("Enter user name: ")
+    password = input("Enter password: ")
+
+    from base64 import b64encode
+    b64encoded = b64encode((user + ":" + password).encode("UTF-8", "replace"))
+
+    from hashlib import sha512
+    m = sha512()
+    m.update(b64encoded)
+    hashedString = m.digest()
+
+    tmp = {}
+    tmp["auth"] = hashedString.decode("UTF-8", "replace")
+
+    f = open(".passwd.json", "w")
+    json.dump(tmp, f, indent = 4)
+    f.close()
+    print("Added auth")
 
 if __name__ == "__main__":
     main()

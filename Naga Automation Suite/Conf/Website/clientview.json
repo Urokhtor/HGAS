@@ -1,0 +1,138 @@
+{
+    "source": {
+        "child1": {
+            "childcount": 2, 
+            "child1": {
+                "childcount": 2, 
+                "child1": {
+                    "child1": {
+                        "element": "h3", 
+                        "innerHTML": "Select client:"
+                    }, 
+                    "childcount": 1, 
+                    "element": "div"
+                }, 
+                "className": "leftcolumn", 
+                "child2": {
+                    "className": "leftcolumnul", 
+                    "id": "clientUL", 
+                    "element": "ul"
+                }, 
+                "id": "leftButtonColumn", 
+                "element": "div"
+            }, 
+            "className": "container", 
+            "child2": {
+                "child1": {
+                    "childcount": 3, 
+                    "child1": {
+                        "child1": {
+                            "child1": {
+                                "child1": {
+                                    "className": "headCell", 
+                                    "element": "th", 
+                                    "innerHTML": "Client info:"
+                                }, 
+                                "childcount": 1, 
+                                "element": "tr"
+                            }, 
+                            "childcount": 1, 
+                            "element": "thead"
+                        }, 
+                        "className": "fullWidth", 
+                        "childcount": 1, 
+                        "element": "table"
+                    }, 
+                    "className": "viewTable", 
+                    "child3": {
+                        "child1": {
+                            "child1": {
+                                "className": "decoratedButton buttonRowItem", 
+                                "id": "modifyClient", 
+                                "value": "Modify", 
+                                "name": "modifyClient", 
+                                "type": "button", 
+                                "element": "input"
+                            }, 
+                            "className": "buttonRow", 
+                            "id": "buttonRow", 
+                            "childcount": 1, 
+                            "element": "div"
+                        }, 
+                        "className": "fullWidth", 
+                        "childcount": 1, 
+                        "element": "table"
+                    }, 
+                    "child2": {
+                        "child1": {
+                            "child1": {
+                                "childcount": 4, 
+                                "child1": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Name"
+                                }, 
+                                "child3": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Type"
+                                }, 
+                                "child2": {
+                                    "className": "dataCell", 
+                                    "id": "clientName", 
+                                    "element": "td"
+                                }, 
+                                "child4": {
+                                    "className": "dataCell", 
+                                    "id": "clientType", 
+                                    "element": "td"
+                                }, 
+                                "element": "tr"
+                            }, 
+                            "childcount": 2, 
+                            "child2": {
+                                "childcount": 4, 
+                                "child1": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": "Address"
+                                }, 
+                                "child3": {
+                                    "className": "labelCell", 
+                                    "element": "td", 
+                                    "innerHTML": ""
+                                }, 
+                                "child2": {
+                                    "className": "dataCell", 
+                                    "id": "clientAddress", 
+                                    "element": "td"
+                                }, 
+                                "child4": {
+                                    "className": "dataCell", 
+                                    "id": "client", 
+                                    "element": "td"
+                                }, 
+                                "element": "tr"
+                            }, 
+                            "id": "tableRows", 
+                            "element": "tbody"
+                        }, 
+                        "className": "fullWidth", 
+                        "childcount": 1, 
+                        "element": "table"
+                    }, 
+                    "id": "clientView", 
+                    "element": "div"
+                }, 
+                "className": "rightcolumn", 
+                "id": "rightDataColumn", 
+                "childcount": 1, 
+                "element": "div"
+            }, 
+            "id": "mainContainer", 
+            "element": "div"
+        }, 
+        "childcount": 1
+    }, 
+    "renderbrowser": true
+}

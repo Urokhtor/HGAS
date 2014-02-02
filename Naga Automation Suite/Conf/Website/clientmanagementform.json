@@ -1,0 +1,152 @@
+{
+    "renderbrowser": true, 
+    "source": {
+        "child1": {
+            "element": "div", 
+            "child1": {
+                "childcount": 1, 
+                "element": "form", 
+                "child1": {
+                    "id": "viewTable", 
+                    "child3": {
+                        "element": "table", 
+                        "child1": {
+                            "id": "buttonRow", 
+                            "child2": {
+                                "id": "saveSendbutton", 
+                                "value": "Save", 
+                                "name": "saveSendbutton", 
+                                "element": "input", 
+                                "type": "button", 
+                                "className": "decoratedButton buttonRowItem", 
+                                "onclick": "doSubmit,clientmanagementForm,save"
+                            }, 
+                            "child1": {
+                                "id": "removeSendbutton", 
+                                "value": "Remove", 
+                                "name": "removeSendbutton", 
+                                "element": "input", 
+                                "type": "button", 
+                                "className": "decoratedButton buttonRowItem", 
+                                "onclick": "doSubmit,clientmanagementForm,remove"
+                            }, 
+                            "element": "div", 
+                            "childcount": 2, 
+                            "className": "buttonRow"
+                        }, 
+                        "className": "fullWidth", 
+                        "childcount": 1
+                    }, 
+                    "child2": {
+                        "element": "table", 
+                        "child1": {
+                            "id": "tableRows", 
+                            "child3": {
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": ""
+                                }, 
+                                "child2": {
+                                    "element": "td", 
+                                    "child1": {
+                                        "element": "input", 
+                                        "type": "text", 
+                                        "id": "clientAddress", 
+                                        "name": "clientAddress"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "childcount": 1
+                                }, 
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Address"
+                                }, 
+                                "childcount": 4, 
+                                "child4": {
+                                    "element": "td", 
+                                    "id": "client", 
+                                    "className": "dataCell"
+                                }
+                            }, 
+                            "child2": {
+                                "child3": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Type"
+                                }, 
+                                "child2": {
+                                    "element": "td", 
+                                    "child1": {
+                                        "element": "input", 
+                                        "type": "text", 
+                                        "id": "clientName", 
+                                        "name": "clientName"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "childcount": 1
+                                }, 
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "td", 
+                                    "className": "labelCell", 
+                                    "innerHTML": "Name"
+                                }, 
+                                "childcount": 4, 
+                                "child4": {
+                                    "element": "td", 
+                                    "child1": {
+                                        "element": "select", 
+                                        "id": "clientType", 
+                                        "name": "clientType"
+                                    }, 
+                                    "className": "dataCell", 
+                                    "childcount": 1
+                                }
+                            }, 
+                            "element": "tbody", 
+                            "child1": {
+                                "element": "input", 
+                                "type": "hidden", 
+                                "id": "clientId", 
+                                "name": "clientId"
+                            }, 
+                            "childcount": 3
+                        }, 
+                        "className": "fullWidth", 
+                        "childcount": 1
+                    }, 
+                    "child1": {
+                        "element": "table", 
+                        "child1": {
+                            "element": "thead", 
+                            "child1": {
+                                "element": "tr", 
+                                "child1": {
+                                    "element": "th", 
+                                    "className": "headCell", 
+                                    "innerHTML": "Client management:"
+                                }, 
+                                "childcount": 1
+                            }, 
+                            "childcount": 1
+                        }, 
+                        "className": "fullWidth", 
+                        "childcount": 1
+                    }, 
+                    "element": "div", 
+                    "childcount": 3, 
+                    "className": "viewTable"
+                }, 
+                "id": "clientmanagementForm", 
+                "method": "post"
+            }, 
+            "id": "mainContainer", 
+            "childcount": 1, 
+            "className": "container"
+        }, 
+        "childcount": 1
+    }
+}

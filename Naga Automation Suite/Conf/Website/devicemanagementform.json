@@ -10,6 +10,7 @@
                 "id": "devicemanagementForm", 
                 "method": "post", 
                 "element": "form", 
+                "childcount": 1, 
                 "child1": {
                     "id": "viewTable", 
                     "element": "div", 
@@ -42,7 +43,8 @@
                                 "id": "removeSendbutton", 
                                 "name": "removeSendbutton", 
                                 "element": "input", 
-                                "className": "buttonRowItem", 
+                                "onclick": "doSubmit,devicemanagementForm,remove", 
+                                "className": "decoratedButton buttonRowItem", 
                                 "type": "button", 
                                 "value": "Remove"
                             }, 
@@ -51,7 +53,8 @@
                                 "id": "saveSendbutton", 
                                 "name": "saveSendbutton", 
                                 "element": "input", 
-                                "className": "buttonRowItem", 
+                                "onclick": "doSubmit,devicemanagementForm,save", 
+                                "className": "decoratedButton buttonRowItem", 
                                 "type": "button", 
                                 "value": "Save"
                             }, 
@@ -146,8 +149,7 @@
                         "className": "fullWidth"
                     }, 
                     "childcount": 3
-                }, 
-                "childcount": 1
+                }
             }, 
             "className": "container"
         }

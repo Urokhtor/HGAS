@@ -29,15 +29,20 @@ class Configuration:
         all the data in this project.
     """
     
-    def __init__(self, confFile):
+    def __init__(self, confFile, createIfNeeded):
         self.confRoot = CONFIG_ROOT
         self.confFile = confFile
         self.mutex = RLock() # For thread safe file operations.
         self.data = {}
         
         if not path.isfile(self.confRoot + self.confFile + ".json"):
-            return None
-            
+            if not createIfNeeded:
+                return None
+
+            f = open(self.confRoot + self.confFile + ".json", "w")
+            json.dump(self.data, f, indent = 4)
+            f.close()
+
         f = open(self.confRoot + self.confFile + ".json", "r")
             
         try:
@@ -58,13 +63,17 @@ class Configuration:
         f = open(self.confRoot + self.confFile + ".json", "w")
         json.dump(self.data, f, indent = 4)
         f.close()
+
+        f = open(self.confRoot + self.confFile + "_backup.json", "w")
+        json.dump(self.data, f, indent = 4)
+        f.close()
         self.mutex.release()
     
     def setItem(self, key, value):
         """
             Updates an object and writes it down to the configuration file.
         """
-        
+
         self.data[key] = value
         self._write()
     
@@ -82,84 +91,3 @@ class Configuration:
         
         #return self.data.items()
         return self.data
-
-    def verify(self):
-        noChanges = True
-        
-        if not "devices" in self.data:
-            noChanges = False
-            self.data["devices"] = []
-            
-        if not "sensors" in self.data:
-            noChanges = False
-            self.data["sensors"] = []
-            
-        if not "sensorinfo" in self.data:
-            noChanges = False
-            self.data["sensorinfo"] = []
-            
-        if not "alerts" in self.data:
-            noChanges = False
-            self.data["alerts"] = []
-        
-        if not "tasks" in self.data:
-            noChanges = False
-            self.data["tasks"] = []
-            
-        if not "sensorcontrol" in self.data:
-            noChanges = False
-            self.data["sensorcontrol"] = []
-            
-        if not "localip" in self.data:
-            noChanges = False
-            self.data["localip"] = ""
-            
-        if not "listenport" in self.data:
-            noChanges = False
-            self.data["listenport"] = 8080
-            
-        if not "arduinoport" in self.data:
-            noChanges = False
-            self.data["arduinoport"] = 48371
-            
-        if not "logginginterval" in self.data:
-            noChanges = False
-            self.data["logginginterval"] = 15
-            
-        if not "dailyplotinterval" in self.data:
-            noChanges = False
-            self.data["dailyplotinterval"] = 30
-        
-        if not "weeklyplotinterval" in self.data:
-            noChanges = False
-            self.data["weeklyplotinterval"] = 60
-        
-        if not "sensorcontrolinterval" in self.data:
-            noChanges = False
-            self.data["sensorcontrolinterval"] = 1
-            
-        if not "alertsinterval" in self.data:
-            noChanges = False
-            self.data["alertsinterval"] = 1
-            
-        if not "eventloglength" in self.data:
-            noChanges = False
-            self.data["eventloglength"] = 40
-            
-        if not "senderemailaddress" in self.data:
-            noChanges = False
-            self.data["senderemailaddress"] = ""
-            
-        if not "receiveremailaddress" in self.data:
-            noChanges = False
-            self.data["receiveremailaddress"] = ""
-            
-        if not "mailserver" in self.data:
-            noChanges = False
-            self.data["mailserver"] = ""
-        
-        if not "mailport" in self.data:
-            noChanges = False
-            self.data["mailport"] = 25
-        
-        return noChanges
